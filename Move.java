@@ -14,6 +14,8 @@ public class Move {
           Piece empty = new Piece("e", "e", this.startingPiece.getRow(), this.startingPiece.getColumn());
           this.board.setTile(this.startingPiece.getRow(), this.startingPiece.getColumn(), empty);
           this.board.setTile(this.endingPiece.getRow(), this.endingPiece.getColumn(), this.startingPiece);
+          this.startingPiece.setRow(endingPiece.getRow());
+          this.startingPiece.setColumn(endingPiece.getColumn());
           return true;
      }
 

@@ -16,6 +16,10 @@ public class Tile {
           this.piece = piece;
      }
 
+     public Piece getPiece() {
+          return this.piece;
+     }
+
      @Override
      public String toString() {
           //return row + ", " + column + ", " + color + "\n";

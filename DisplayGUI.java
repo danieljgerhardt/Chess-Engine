@@ -13,6 +13,10 @@ public class DisplayGUI extends JFrame implements ActionListener {
 
      private JPanel buttonPanel;
 
+     private ArrayList<Piece> piecesClicked = new ArrayList<Piece>();
+
+     private boolean whiteToMove = true;
+
      public DisplayGUI() {
           gameBoard = new Board();
           gameBoard.arrangePiecesWhite();
@@ -59,7 +63,26 @@ public class DisplayGUI extends JFrame implements ActionListener {
      }
 
      public void actionPerformed(ActionEvent e) {
-          
+          for(int i = 0; i < 8; i++) {
+               for(int j = 0; j < 8; j++) {
+                    if(e.getSource() == tileButtons[i][j]) {
+                         piecesClicked.add(this.gameBoard.getTileArray()[i][j].getPiece());
+                         if(piecesClicked.size() % 2 == 0) {
+                              if(whiteToMove && piecesClicked.get(piecesClicked.size() - 2).getColor().equals("w")) {
+                                   Move move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard);
+                                   move.makeMove();
+                                   this.whiteToMove = !whiteToMove;
+                                   this.addPieces();
+                              } else if (!whiteToMove && piecesClicked.get(piecesClicked.size() - 2).getColor().equals("b")){
+                                   Move move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard);
+                                   move.makeMove();
+                                   this.whiteToMove = !whiteToMove;
+                                   this.addPieces();
+                              }
+                         }
+                    }
+               }
+           }
      }
 
      public Board getBoard() {
@@ -68,11 +91,6 @@ public class DisplayGUI extends JFrame implements ActionListener {
 
      public static void main(String[] args) {
           DisplayGUI GUI = new DisplayGUI();
-          Piece testOne = new Piece("P", "w", 6, 0);
-          Piece testTwo = new Piece("e", "e", 4, 0);
-          Move move = new Move(testOne, testTwo, GUI.getBoard());
-          move.makeMove();
-          GUI.addPieces();
      }
 
 }
