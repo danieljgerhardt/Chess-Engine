@@ -20,9 +20,25 @@ public class Piece {
          return this.color;
     }
 
+    public int getRow() {
+         return this.row;
+    }
+
+    public int getColumn() {
+         return this.column;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public void setColumn(int column) {
+        this.column = column;
+    }
+
     @Override
     public String toString() {
-         return this.type;
+         return this.color + this.type + " ";
     }
 
 }

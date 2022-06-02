@@ -45,4 +45,20 @@ public class Board {
           return this.tileArray;
      }
 
+     public void setTile(int row, int column, Piece piece) {
+        this.tileArray[row][column].setPiece(piece);
+     }
+
+     @Override
+     public String toString() {
+          String ret = "";
+          for(Tile[] tileRow : this.tileArray) {
+               for (Tile tile : tileRow) {
+                    ret += tile.toString();
+               }
+               ret += "\n";
+         }
+         return ret;
+    }
+
 }
