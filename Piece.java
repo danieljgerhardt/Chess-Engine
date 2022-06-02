@@ -13,16 +13,16 @@ public class Piece {
     }
 
     public String getType() {
-      return this.type;
+         return this.type;
     }
 
     public String getColor() {
-      return this.color;
+         return this.color;
     }
 
     @Override
     public String toString() {
-      return this.type;
+         return this.type;
     }
 
 }
