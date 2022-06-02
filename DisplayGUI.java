@@ -22,36 +22,57 @@ public class DisplayGUI extends JFrame implements ActionListener {
           frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
           frame.setVisible(true);
           this.makeGrid();
+          this.addPieces();
           frame.add(buttonPanel);
      }
+
 
      public void makeGrid() {
           buttonPanel = new JPanel((new GridLayout(8, 8)));
           for(int i = 0; i < 8; i++) {
                for(int j = 0; j < 8; j++) {
                     tileButtons[i][j] = new JButton();
-
                     tileButtons[i][j].addActionListener(this);
                     tileButtons[i][j].setEnabled(true);
+                    Color lightColor = new Color(238,238,210);
+                    Color darkColor = new Color(118, 150, 86);
                     if ((i + j) % 2 == 0) {
-                         tileButtons[i][j].setBackground(Color.WHITE);
+                         tileButtons[i][j].setBackground(lightColor);
                     } else {
-                         tileButtons[i][j].setBackground(Color.BLACK);
+                         tileButtons[i][j].setBackground(darkColor);
                     }
 
                     buttonPanel.add(tileButtons[i][j]);
 
-
                }
-         }
+          }
+     }
+
+     public void addPieces() {
+          for(int i = 0; i < 8; i++) {
+               for (int j = 0; j < 8; j++) {
+                    String pieceString = this.gameBoard.getPieces()[i][j];
+                    String directory = "Images/" + pieceString + ".png";
+                    tileButtons[i][j].setIcon(new ImageIcon(directory));
+               }
+          }
      }
 
      public void actionPerformed(ActionEvent e) {
+          
+     }
 
+     public Board getBoard() {
+          return this.gameBoard;
      }
 
      public static void main(String[] args) {
-          new DisplayGUI();
+          DisplayGUI GUI = new DisplayGUI();
+          Piece testOne = new Piece("P", "w", 6, 0);
+          Piece testTwo = new Piece("e", "e", 4, 0);
+          Move move = new Move(testOne, testTwo, GUI.getBoard());
+          move.makeMove();
+          GUI.addPieces();
      }
 
 }

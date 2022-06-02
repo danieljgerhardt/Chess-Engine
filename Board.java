@@ -45,8 +45,14 @@ public class Board {
           return this.tileArray;
      }
 
+     public String[][] getPieces() {
+          return this.pieces;
+     }
+
      public void setTile(int row, int column, Piece piece) {
         this.tileArray[row][column].setPiece(piece);
+        String pieceString = piece.getColor() + piece.getType();
+        this.pieces[row][column] = pieceString;
      }
 
      @Override
