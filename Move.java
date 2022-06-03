@@ -8,6 +8,7 @@ public class Move {
      private Board board;
      private boolean canEnPassant = false;
      private Tile enPassantTile;
+     private boolean engagingEnPassant = false;
 
      public Move(Piece start, Piece end, Board board) {
           this.startingPiece = start;
@@ -23,22 +24,66 @@ public class Move {
           this.endingTile = this.board.getTileArray()[this.endingPiece.getRow()][this.endingPiece.getColumn()];
           this.canEnPassant = enPassantAbility;
           this.enPassantTile = enPassantTile;
+          //Make engagingEnPassant true if this move is en passant
+          if (this.startingPiece.getColor().equals("w")){
+               if (this.startingPiece.getType().equals("P") && this.endingTile.getRow() + 1 == this.startingPiece.getRow()) {
+                    this.engagingEnPassant = true;
+               }
+          } else {
+               if (this.startingPiece.getType().equals("P") && this.endingTile.getRow() - 1 == this.startingPiece.getRow()) {
+                    this.engagingEnPassant = true;
+               }
+          }
      }
 
      public boolean makeMove() {
           this.generatePossibleMoves(this.startingPiece);
           if(this.startingPiece.getPossibleMoves().contains(this.endingTile)) {
+               if (engagingEnPassant) {
+                    this.makeEnPassantCapture();
+               }
                Piece empty = new Piece("e", "e", this.startingPiece.getRow(), this.startingPiece.getColumn());
                this.board.setTile(this.startingPiece.getRow(), this.startingPiece.getColumn(), empty);
                this.board.setTile(this.endingPiece.getRow(), this.endingPiece.getColumn(), this.startingPiece);
                this.startingPiece.setRow(endingPiece.getRow());
                this.startingPiece.setColumn(endingPiece.getColumn());
+               this.checkPromotion();
                return true;
           } else {
                return false;
           }
-
      }
+
+     public void makeEnPassantCapture() {
+          Piece empty;
+          if (this.startingPiece.getColor().equals("w")) {
+               empty = new Piece("e", "e", this.endingTile.getRow() + 1, this.endingTile.getColumn());
+               this.board.setTile( this.endingTile.getRow() + 1, this.endingTile.getColumn(), empty);
+          } else {
+               empty = new Piece("e", "e", this.endingTile.getRow() - 1, this.endingTile.getRow());
+               this.board.setTile( this.endingTile.getRow() - 1, this.endingTile.getColumn(), empty);
+          }
+          engagingEnPassant = false;
+     }
+
+     public boolean checkPromotion() {
+          if (this.startingPiece.getType().equals("P")) {
+               if (this.startingPiece.getRow() == 0) {
+                    promotion("Q", "w");
+                    return true;
+               }
+               if (this.startingPiece.getRow() == 7) {
+                    promotion("Q", "b");
+                    return true;
+               }
+          }
+          return false;
+     }
+
+     public void promotion(String newType, String color) {
+          Piece promotion = new Piece(newType, color, this.endingTile.getRow() - 1, this.endingTile.getRow());
+          this.board.setTile(this.startingPiece.getRow(), this.startingPiece.getColumn(), promotion);
+    }
 
      public Tile getEndingTile() {
           return this.endingTile;
@@ -362,12 +407,9 @@ public class Move {
                     if (this.enPassantTile.getColumn() + 1 == this.startingPiece.getColumn() || this.enPassantTile.getColumn() - 1 == this.startingPiece.getColumn()) {
                          if(piece.getColor().equals("b")) {
                               piece.addToPossibleMoves(board.getTileArray()[piece.getRow() + 1][this.enPassantTile.getColumn()]);
-                              //System.out.println((piece.getRow() - 1) + "," + (this.enPassantTile.getColumn() + 1));
-                              //System.out.println(piece.getPossibleMoves());
                          }
                          if(piece.getColor().equals("w")) {
                               piece.addToPossibleMoves(board.getTileArray()[piece.getRow() - 1][this.enPassantTile.getColumn()]);
-                              //System.out.println(piece.getPossibleMoves());
                          }
                     }
 
@@ -384,8 +426,22 @@ public class Move {
                     }
                }
                //check for diagonal capture
-               //promotion -- if pawn reaches end allow promotion
+               if (piece.getColor().equals("w")) {
+                    if (this.board.getTileArray()[piece.getRow() - 1][piece.getColumn() + 1].getPiece().getColor().equals(piece.getOppositeColor())) {
+                         piece.addToPossibleMoves(board.getTileArray()[piece.getRow() - 1][piece.getColumn() + 1]);
+                    }
+                    if (this.board.getTileArray()[piece.getRow() - 1][piece.getColumn() - 1].getPiece().getColor().equals(piece.getOppositeColor())) {
+                         piece.addToPossibleMoves(board.getTileArray()[piece.getRow() - 1][piece.getColumn() - 1]);
+                    }
+               }
+               if (piece.getColor().equals("b")) {
+                    if (this.board.getTileArray()[piece.getRow() + 1][piece.getColumn() + 1].getPiece().getColor().equals(piece.getOppositeColor())) {
+                         piece.addToPossibleMoves(board.getTileArray()[piece.getRow() + 1][piece.getColumn() + 1]);
+                    }
+                    if (this.board.getTileArray()[piece.getRow() + 1][piece.getColumn() - 1].getPiece().getColor().equals(piece.getOppositeColor())) {
+                         piece.addToPossibleMoves(board.getTileArray()[piece.getRow() + 1][piece.getColumn() - 1]);
+                    }
+               }
           }
     }
-
 }
