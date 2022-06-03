@@ -48,11 +48,11 @@ public class Piece {
     }
 
     public ArrayList<Tile> getPossibleMoves() {
-         String ret = "";
+         /*String ret = "";
          for (int i = 0; i < this.possibleMoves.size(); i++) {
               ret += "[" + this.possibleMoves.get(i).getRow() + "," + this.possibleMoves.get(i).getColumn() + "] ";
          }
-         System.out.println(ret);
+         System.out.println(ret);*/
          return this.possibleMoves;
     }
 

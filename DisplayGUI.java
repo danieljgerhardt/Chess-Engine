@@ -79,6 +79,7 @@ public class DisplayGUI extends JFrame implements ActionListener {
                               }
                               if(whiteToMove && piecesClicked.get(piecesClicked.size() - 2).getColor().equals("w")) {
                                    if(previousMove != null) {
+                                        //Next line checks if en passant is legal
                                         if (previousMove.getStartingPiece().getType().equals("P") && previousMove.getEndingTile().getRow() == 3) {
                                              //moved white pawn 2 squares on previous move -- en passant is available
                                              move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard, true, previousMove.getEndingTile());
@@ -98,6 +99,7 @@ public class DisplayGUI extends JFrame implements ActionListener {
                                    this.addPieces();
                               } else if (!whiteToMove && piecesClicked.get(piecesClicked.size() - 2).getColor().equals("b")){
                                    if (previousMove != null) {
+                                        //Next line checks if en passant is legal
                                         if (previousMove.getStartingPiece().getType().equals("P") && previousMove.getEndingTile().getRow() == 4) {
                                              //moved black pawn 2 squares on previous move -- en passant is available
                                              move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard, true, previousMove.getEndingTile());
@@ -128,6 +130,10 @@ public class DisplayGUI extends JFrame implements ActionListener {
 
      public static void main(String[] args) {
           DisplayGUI GUI = new DisplayGUI();
+     }
+
+     public void setTileColor(Color c, int row, int column) {
+          this.tileButtons[row][column].setBackground(c);
      }
 
 }

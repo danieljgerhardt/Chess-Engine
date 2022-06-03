@@ -57,11 +57,17 @@ public class Move {
      public void makeEnPassantCapture() {
           Piece empty;
           if (this.startingPiece.getColor().equals("w")) {
-               empty = new Piece("e", "e", this.endingTile.getRow() + 1, this.endingTile.getColumn());
-               this.board.setTile( this.endingTile.getRow() + 1, this.endingTile.getColumn(), empty);
+               //if the pawn is next to a pawn of the opposite color
+               if(this.board.getTileArray()[this.endingTile.getRow() + 1][this.endingTile.getColumn()].toString().equals("bP ")) {
+                    empty = new Piece("e", "e", this.endingTile.getRow() + 1, this.endingTile.getColumn());
+                    this.board.setTile( this.endingTile.getRow() + 1, this.endingTile.getColumn(), empty);
+               }
           } else {
-               empty = new Piece("e", "e", this.endingTile.getRow() - 1, this.endingTile.getRow());
-               this.board.setTile( this.endingTile.getRow() - 1, this.endingTile.getColumn(), empty);
+               //if the pawn is next to a pawn of the opposite color
+               if(this.board.getTileArray()[this.endingTile.getRow() - 1][this.endingTile.getColumn()].toString().equals("wP ")) {
+                    empty = new Piece("e", "e", this.endingTile.getRow() - 1, this.endingTile.getRow());
+                    this.board.setTile( this.endingTile.getRow() - 1, this.endingTile.getColumn(), empty);
+               }
           }
           engagingEnPassant = false;
      }
@@ -103,6 +109,18 @@ public class Move {
           ret += ", ";
           ret += this.endingTile.getColumn();
           return ret;
+     }
+
+     public Tile[] detectKingThreats() {
+          //Detect all possible threats on straights, diagonals, and knight jumps
+          return null;
+     }
+
+     public boolean kingCanMoveToSquare() {
+          //Can an enemy piece see this square
+          //See what enemy pieces are viewing the square the king is trying to move to
+          //Make another generatePossibleMoves method
+          return false;
      }
 
      public void generatePossibleMoves(Piece piece) {
@@ -427,20 +445,29 @@ public class Move {
                }
                //check for diagonal capture
                if (piece.getColor().equals("w")) {
-                    if (this.board.getTileArray()[piece.getRow() - 1][piece.getColumn() + 1].getPiece().getColor().equals(piece.getOppositeColor())) {
-                         piece.addToPossibleMoves(board.getTileArray()[piece.getRow() - 1][piece.getColumn() + 1]);
+                    if(piece.getColumn() != 7) {
+                         if (this.board.getTileArray()[piece.getRow() - 1][piece.getColumn() + 1].getPiece().getColor().equals(piece.getOppositeColor())) {
+                              piece.addToPossibleMoves(board.getTileArray()[piece.getRow() - 1][piece.getColumn() + 1]);
+                         }
                     }
-                    if (this.board.getTileArray()[piece.getRow() - 1][piece.getColumn() - 1].getPiece().getColor().equals(piece.getOppositeColor())) {
-                         piece.addToPossibleMoves(board.getTileArray()[piece.getRow() - 1][piece.getColumn() - 1]);
+                    if (piece.getColumn() != 0) {
+                         if (this.board.getTileArray()[piece.getRow() - 1][piece.getColumn() - 1].getPiece().getColor().equals(piece.getOppositeColor())) {
+                              piece.addToPossibleMoves(board.getTileArray()[piece.getRow() - 1][piece.getColumn() - 1]);
+                         }
                     }
                }
                if (piece.getColor().equals("b")) {
-                    if (this.board.getTileArray()[piece.getRow() + 1][piece.getColumn() + 1].getPiece().getColor().equals(piece.getOppositeColor())) {
-                         piece.addToPossibleMoves(board.getTileArray()[piece.getRow() + 1][piece.getColumn() + 1]);
+                    if (piece.getColumn() != 7) {
+                         if (this.board.getTileArray()[piece.getRow() + 1][piece.getColumn() + 1].getPiece().getColor().equals(piece.getOppositeColor())) {
+                              piece.addToPossibleMoves(board.getTileArray()[piece.getRow() + 1][piece.getColumn() + 1]);
+                         }
                     }
-                    if (this.board.getTileArray()[piece.getRow() + 1][piece.getColumn() - 1].getPiece().getColor().equals(piece.getOppositeColor())) {
-                         piece.addToPossibleMoves(board.getTileArray()[piece.getRow() + 1][piece.getColumn() - 1]);
+                    if (piece.getColumn() != 0) {
+                         if (this.board.getTileArray()[piece.getRow() + 1][piece.getColumn() - 1].getPiece().getColor().equals(piece.getOppositeColor())) {
+                              piece.addToPossibleMoves(board.getTileArray()[piece.getRow() + 1][piece.getColumn() - 1]);
+                         }
                     }
+
                }
           }
     }
