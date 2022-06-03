@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Tile {
 
      private int row;
@@ -18,6 +20,14 @@ public class Tile {
 
      public Piece getPiece() {
           return this.piece;
+     }
+
+     public int getRow() {
+          return this.row;
+     }
+
+     public int getColumn() {
+          return this.column;
      }
 
      @Override

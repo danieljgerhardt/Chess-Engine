@@ -4,6 +4,7 @@ import java.awt.event.*;
 import java.util.concurrent.TimeUnit;
 import java.util.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class DisplayGUI extends JFrame implements ActionListener {
 
@@ -16,6 +17,9 @@ public class DisplayGUI extends JFrame implements ActionListener {
      private ArrayList<Piece> piecesClicked = new ArrayList<Piece>();
 
      private boolean whiteToMove = true;
+
+     private ArrayList<Move> moveList = new ArrayList<Move>();
+
 
      public DisplayGUI() {
           gameBoard = new Board();
@@ -68,15 +72,48 @@ public class DisplayGUI extends JFrame implements ActionListener {
                     if(e.getSource() == tileButtons[i][j]) {
                          piecesClicked.add(this.gameBoard.getTileArray()[i][j].getPiece());
                          if(piecesClicked.size() % 2 == 0) {
+                              Move previousMove = null;
+                              Move move;
+                              if (this.moveList.size() > 1) {
+                                   previousMove = this.moveList.get(this.moveList.size() - 1);
+                              }
                               if(whiteToMove && piecesClicked.get(piecesClicked.size() - 2).getColor().equals("w")) {
-                                   Move move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard);
-                                   move.makeMove();
-                                   this.whiteToMove = !whiteToMove;
+                                   if(previousMove != null) {
+                                        if (previousMove.getStartingPiece().getType().equals("P") && previousMove.getEndingTile().getRow() == 3) {
+                                             //moved white pawn 2 squares on previous move -- en passant is available
+                                             move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard, true, previousMove.getEndingTile());
+                                        } else {
+                                             move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard);
+                                        }
+                                   } else {
+                                        move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard);
+                                   }
+                                   if (move.makeMove()) {
+                                        this.moveList.add(move);
+                                        System.out.println(move.toString());
+                                        this.whiteToMove = !whiteToMove;
+                                   } else {
+                                        System.out.println("Illegal move");
+                                   }
                                    this.addPieces();
                               } else if (!whiteToMove && piecesClicked.get(piecesClicked.size() - 2).getColor().equals("b")){
-                                   Move move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard);
-                                   move.makeMove();
-                                   this.whiteToMove = !whiteToMove;
+                                   if (previousMove != null) {
+                                        if (previousMove.getStartingPiece().getType().equals("P") && previousMove.getEndingTile().getRow() == 4) {
+                                             //moved black pawn 2 squares on previous move -- en passant is available
+                                             move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard, true, previousMove.getEndingTile());
+                                        } else {
+                                             move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard);
+                                        }
+                                   } else {
+                                        move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard);
+                                   }
+                                   if (move.makeMove()) {
+                                        this.moveList.add(move);
+                                        System.out.println(move.toString());
+                                        this.whiteToMove = !whiteToMove;
+                                   } else {
+                                        System.out.println("Illegal move");
+                                   }
                                    this.addPieces();
                               }
                          }
