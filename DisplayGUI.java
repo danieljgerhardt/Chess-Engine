@@ -71,57 +71,61 @@ public class DisplayGUI extends JFrame implements ActionListener {
                for(int j = 0; j < 8; j++) {
                     if(e.getSource() == tileButtons[i][j]) {
                          piecesClicked.add(this.gameBoard.getTileArray()[i][j].getPiece());
-                         if(piecesClicked.size() % 2 == 0) {
-                              Move previousMove = null;
-                              Move move;
-                              if (this.moveList.size() > 1) {
-                                   previousMove = this.moveList.get(this.moveList.size() - 1);
-                              }
-                              if(whiteToMove && piecesClicked.get(piecesClicked.size() - 2).getColor().equals("w")) {
-                                   if(previousMove != null) {
-                                        //Next line checks if en passant is legal
-                                        if (previousMove.getStartingPiece().getType().equals("P") && previousMove.getEndingTile().getRow() == 3) {
-                                             //moved white pawn 2 squares on previous move -- en passant is available
-                                             move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard, true, previousMove.getEndingTile());
-                                        } else {
-                                             move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard);
-                                        }
-                                   } else {
-                                        move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard);
-                                   }
-                                   if (move.makeMove()) {
-                                        this.moveList.add(move);
-                                        System.out.println(move.toString());
-                                        this.whiteToMove = !whiteToMove;
-                                   } else {
-                                        System.out.println("Illegal move");
-                                   }
-                                   this.addPieces();
-                              } else if (!whiteToMove && piecesClicked.get(piecesClicked.size() - 2).getColor().equals("b")){
-                                   if (previousMove != null) {
-                                        //Next line checks if en passant is legal
-                                        if (previousMove.getStartingPiece().getType().equals("P") && previousMove.getEndingTile().getRow() == 4) {
-                                             //moved black pawn 2 squares on previous move -- en passant is available
-                                             move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard, true, previousMove.getEndingTile());
-                                        } else {
-                                             move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard);
-                                        }
-                                   } else {
-                                        move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard);
-                                   }
-                                   if (move.makeMove()) {
-                                        this.moveList.add(move);
-                                        System.out.println(move.toString());
-                                        this.whiteToMove = !whiteToMove;
-                                   } else {
-                                        System.out.println("Illegal move");
-                                   }
-                                   this.addPieces();
-                              }
-                         }
+                         this.executeMove();
                     }
                }
            }
+           //Remove to implement blindfold chess!
+           this.addPieces();
+     }
+
+     public void executeMove() {
+          if(piecesClicked.size() % 2 == 0) {
+               Move previousMove = null;
+               Move move;
+               if (this.moveList.size() > 1) {
+                    previousMove = this.moveList.get(this.moveList.size() - 1);
+               }
+               if(whiteToMove && piecesClicked.get(piecesClicked.size() - 2).getColor().equals("w")) {
+                    if(previousMove != null) {
+                         //Next line checks if en passant is legal
+                         if (previousMove.getStartingPiece().getType().equals("P") && previousMove.getEndingTile().getRow() == 3) {
+                              //moved white pawn 2 squares on previous move -- en passant is available
+                              move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard, true, previousMove.getEndingTile());
+                         } else {
+                              move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard);
+                         }
+                    } else {
+                         move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard);
+                    }
+                    if (move.makeMove()) {
+                         this.moveList.add(move);
+                         System.out.println(move.toString());
+                         this.whiteToMove = !whiteToMove;
+                    } else {
+                         System.out.println("Illegal move");
+                    }
+               } else if (!whiteToMove && piecesClicked.get(piecesClicked.size() - 2).getColor().equals("b")){
+                    if (previousMove != null) {
+                         //Next line checks if en passant is legal
+                         if (previousMove.getStartingPiece().getType().equals("P") && previousMove.getEndingTile().getRow() == 4) {
+                              //moved black pawn 2 squares on previous move -- en passant is available
+                              move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard, true, previousMove.getEndingTile());
+                         } else {
+                              move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard);
+                         }
+                    } else {
+                         move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard);
+                    }
+                    if (move.makeMove()) {
+                         this.moveList.add(move);
+                         System.out.println(move.toString());
+                         this.whiteToMove = !whiteToMove;
+                    } else {
+                         System.out.println("Illegal move");
+                    }
+               }
+          }
      }
 
      public Board getBoard() {

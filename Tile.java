@@ -48,4 +48,22 @@ public class Tile {
           return this.piece.getColor() + this.piece.getType() + " ";
      }
 
+     @Override
+     public boolean equals(Object other) {
+          if (other == this) {
+            return true;
+        }
+
+        if (!(other instanceof Tile)) {
+            return false;
+        }
+
+        //row, column, color, piece
+        if (other.getRow() == this.getRow() && other.getColumnn() == this.getColumn() && other.getColor().equals(this.getColor()) && other.getPiece().equals(this.getPiece())) {
+             return true;
+        } else {
+             return false;
+        }
+     }
+
 }

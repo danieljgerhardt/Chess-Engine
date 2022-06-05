@@ -27,6 +27,10 @@ public class Piece {
          return this.type;
     }
 
+    public void setType(String newType) {
+         this.type = newType;
+    }
+
     public String getColor() {
          return this.color;
     }
@@ -69,4 +73,21 @@ public class Piece {
          return this.color + this.type + " ";
     }
 
+    @Override
+    public boolean equals(Object other) {
+         if (other == this) {
+           return true;
+       }
+
+       if (!(other instanceof Piece)) {
+           return false;
+       }
+
+       //row, column, color, piece
+       if (other.getRow() == this.getRow() && other.getColumnn() == this.getColumn() && other.getColor().equals(this.getColor()) && other.getType().equals(this.getType())) {
+            return true;
+       } else {
+            return false;
+       }
+    }
 }

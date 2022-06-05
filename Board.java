@@ -51,6 +51,17 @@ public class Board {
           return this.pieces;
      }
 
+     public Piece getKing(String color) {
+          for (int row = 0; row < BOARD_SIZE; row++) {
+               for (int column = 0; column < BOARD_SIZE; column++) {
+                    if (pieces[row][column].equals(color + "K")) {
+                         return tileArray[row][column].getPiece();
+                    }
+              }
+          }
+          return null;
+     }
+
      public void setTile(int row, int column, Piece piece) {
         this.tileArray[row][column].setPiece(piece);
         String pieceString = piece.getColor() + piece.getType();
