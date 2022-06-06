@@ -86,7 +86,7 @@ public class Piece {
        Piece test = (Piece) other;
 
        //row, column, color, piece
-       if (test.getRow() == this.getRow() && test.getColor().equals(this.getColor()) && test.getType().equals(this.getType())) {
+       if (test.getRow() == this.getRow() && test.getColumn() == this.getColumn() && test.getColor().equals(this.getColor()) && test.getType().equals(this.getType())) {
             return true;
        } else {
             return false;

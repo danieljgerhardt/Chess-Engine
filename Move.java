@@ -5,6 +5,7 @@ public class Move {
 
      private Piece startingPiece;
      private Piece endingPiece;
+     private Tile startingTile;
      private Tile endingTile;
      private Board board;
      private boolean canEnPassant = false;
@@ -15,6 +16,7 @@ public class Move {
           this.startingPiece = start;
           this.endingPiece = end;
           this.board = board;
+          this.startingTile = this.board.getTileArray()[this.startingPiece.getRow()][this.startingPiece.getColumn()];
           this.endingTile = this.board.getTileArray()[this.endingPiece.getRow()][this.endingPiece.getColumn()];
      }
 
@@ -22,6 +24,7 @@ public class Move {
           this.startingPiece = start;
           this.endingPiece = end;
           this.board = board;
+          this.startingTile = this.board.getTileArray()[this.startingPiece.getRow()][this.startingPiece.getColumn()];
           this.endingTile = this.board.getTileArray()[this.endingPiece.getRow()][this.endingPiece.getColumn()];
           this.canEnPassant = enPassantAbility;
           this.enPassantTile = enPassantTile;
@@ -38,8 +41,8 @@ public class Move {
      }
 
      public boolean makeMove() {
-          this.detectKingThreats("w");
-          this.detectKingThreats("b");
+          if(!neutralizeThreat("w")) return false;
+          if(!neutralizeThreat("b")) return false;
           this.generatePossibleMoves(this.startingPiece);
           if(this.startingPiece.getPossibleMoves().contains(this.endingTile)) {
                if (engagingEnPassant) {
@@ -50,11 +53,26 @@ public class Move {
                this.board.setTile(this.endingPiece.getRow(), this.endingPiece.getColumn(), this.startingPiece);
                this.startingPiece.setRow(endingPiece.getRow());
                this.startingPiece.setColumn(endingPiece.getColumn());
+               //check for pins
+               ArrayList<Tile> postMoveThreats = new ArrayList<Tile>();
+               postMoveThreats = this.detectKingThreats(this.startingPiece.getColor());
+               if (postMoveThreats != null && postMoveThreats.size() > 0) {
+                    //System.out.println(this.startingPiece.toString());
+                    this.board.setTile(this.startingTile.getRow(), this.startingTile.getColumn(), this.startingPiece);
+                    this.board.setTile(this.endingTile.getRow(), this.endingTile.getColumn(), this.endingPiece);
+                    this.startingPiece.setRow(startingTile.getRow());
+                    this.startingPiece.setColumn(startingTile.getColumn());
+                    this.endingPiece.setRow(endingTile.getRow());
+                    this.endingPiece.setColumn(endingTile.getColumn());
+                    return false;
+               }
+               //execute promotion
                this.checkPromotion();
                return true;
           } else {
                return false;
           }
+
      }
 
      public void makeEnPassantCapture() {
@@ -89,6 +107,29 @@ public class Move {
           return false;
      }
 
+     public boolean neutralizeThreat(String color) {
+          ArrayList<Tile> threats = new ArrayList<Tile>();
+          if (this.startingPiece.getColor().equals(color)) {
+               threats = this.detectKingThreats(color);
+               if(threats != null && threats.size() > 0) {
+                    if(!this.startingPiece.getType().equals("K")) {
+                         boolean captureChecker = false;
+                         for(Tile t : threats) {
+                              if (t.equals(this.endingTile)) {
+                                   captureChecker = true;
+                              }
+                         }
+                         if (!captureChecker) {
+                              return false;
+                         }
+                    }
+               }
+          }
+          //block checks
+          
+          return true;
+     }
+
      public void promotion(String newType, String color) {
           this.startingPiece.setType("Q");
           this.board.setTile( this.endingTile.getRow(), this.endingTile.getColumn(), startingPiece);
@@ -104,13 +145,11 @@ public class Move {
 
      @Override
      public String toString() {
-          String ret = "Moving ";
-          ret += this.startingPiece.getColor();
-          ret += this.startingPiece.getType();
-          ret += " to ";
-          ret += this.endingTile.getRow();
-          ret += ", ";
-          ret += this.endingTile.getColumn();
+          String ret = "";
+          if (!this.startingPiece.getType().equals("P")) {
+               ret += this.startingPiece.getType();
+          }
+          ret += this.endingTile.toTileNotation();
           return ret;
      }
 
@@ -119,28 +158,35 @@ public class Move {
           ArrayList<Tile> threats = new ArrayList<Tile>();
           threats.clear();
           Piece king = this.board.getKing(color);
+          king.clearPossibleMoves();
           this.generatePossibleRookMoves(king);
-          this.generatePossibleBishopMoves(king);
-          this.generatePossibleKnightMoves(king);
-
-
           for (Tile t : king.getPossibleMoves()) {
-               if (!threats.contains(t)) {
+               if ((t.getPiece().getType().equals("Q") || t.getPiece().getType().equals("R")) && !t.getPiece().getColor().equals(color)) {
                     threats.add(t);
                }
-               //if (!t.getPiece().getType().equals("e") && !t.getPiece().getColor().equals("w")) {
-               //     System.out.println(t.getRow() + ", " + t.getColumn());
-               //}
           }
-
-          Set<Tile> set = new HashSet<>(threats);
+          //king.clearPossibleMoves();
+          this.generatePossibleBishopMoves(king);
+          for (Tile t : king.getPossibleMoves()) {
+               if ((t.getPiece().getType().equals("Q") || t.getPiece().getType().equals("B")) && !t.getPiece().getColor().equals(color)) {
+                    threats.add(t);
+               }
+          }
+          //king.clearPossibleMoves();
+          this.generatePossibleKnightMoves(king);
+          for (Tile t : king.getPossibleMoves()) {
+               if (t.getPiece().getType().equals("N") && !t.getPiece().getColor().equals(color)) {
+                    threats.add(t);
+               }
+          }
+          /*Set<Tile> set = new HashSet<>(threats);
           threats.clear();
-          threats.addAll(set);
-          for(Tile t : threats) {
+          threats.addAll(set);*/
+          /*for(Tile t : threats) {
                if (!t.getPiece().getType().equals("e") && !t.getPiece().getColor().equals(color)) {
                     System.out.println(t.getRow() + ", " + t.getColumn());
                }
-          }
+          }*/
           if (threats.size() > 0) {
                return threats;
           } else {

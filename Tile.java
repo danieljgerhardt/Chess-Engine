@@ -30,6 +30,43 @@ public class Tile {
           }
      }
 
+     public String toTileNotation() {
+          //ARRAY DIMENSION 1 TO CHESS NOTATION:
+          //0 = 8, 1 = 7, 2 = 6, 3 = 5, etc.
+          //ARRAY DIMENSION 2 TO CHESS NOTATION:
+          //0 = a, 2 = b, 3 = c, 4 = d, etc.
+
+          String dim1 = "";
+          switch (this.column) {
+               case 0:
+                    dim1 = "a";
+                    break;
+               case 1:
+                    dim1 = "b";
+                    break;
+               case 2:
+                    dim1 = "c";
+                    break;
+               case 3:
+                    dim1 = "d";
+                    break;
+               case 4:
+                    dim1 = "e";
+                    break;
+               case 5:
+                    dim1 = "f";
+                    break;
+               case 6:
+                    dim1 = "g";
+                    break;
+               case 7:
+                    dim1 = "h";
+                    break;
+        }
+        int dim2 = 8 - this.row;
+        return dim1 + dim2;
+     }
+
      public Piece getPiece() {
           return this.piece;
      }
@@ -65,7 +102,7 @@ public class Tile {
         Tile test = (Tile) other;
 
         //row, column, color, piece
-        if (test.getRow() == this.getRow() && test.getColor().equals(this.getColor()) && test.getPiece().equals(this.getPiece())) {
+        if (test.getRow() == this.getRow() && test.getColumn() == this.getColumn() && test.getColor().equals(this.getColor()) && test.getPiece().equals(this.getPiece())) {
              return true;
         } else {
              return false;

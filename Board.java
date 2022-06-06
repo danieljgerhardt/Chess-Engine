@@ -57,7 +57,7 @@ public class Board {
                     if (pieces[row][column].equals(color + "K")) {
                          return tileArray[row][column].getPiece();
                     }
-              }
+               }
           }
           return null;
      }
