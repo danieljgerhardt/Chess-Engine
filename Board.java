@@ -14,14 +14,6 @@ public class Board {
           {"ee", "ee", "ee", "ee", "ee", "ee", "ee", "ee"},
           {"wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"},
           {"wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"}
-          /*{"ee", "ee", "ee", "ee", "ee", "ee", "ee", "ee"},
-          {"ee", "ee", "ee", "ee", "ee", "ee", "ee", "ee"},
-          {"ee", "ee", "ee", "ee", "bQ", "ee", "ee", "ee"},
-          {"ee", "ee", "ee", "ee", "ee", "ee", "ee", "ee"},
-          {"ee", "ee", "ee", "ee", "wQ", "ee", "ee", "ee"},
-          {"ee", "ee", "ee", "wK", "ee", "ee", "ee", "ee"},
-          {"ee", "ee", "ee", "ee", "ee", "ee", "ee", "ee"},
-          {"bK", "ee", "ee", "ee", "ee", "ee", "ee", "ee"}*/
      };
 
      public Board() {
