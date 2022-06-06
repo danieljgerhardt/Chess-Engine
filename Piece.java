@@ -7,12 +7,14 @@ public class Piece {
     private int row;
     private int column;
     private ArrayList<Tile> possibleMoves = new ArrayList<Tile>(); //This is a list of all possible moves INCLUDING illegal moves
+    private boolean hasMoved;
 
     public Piece(String type, String color, int row, int column) {
         this.type = type;
         this.color = color;
         this.row = row;
         this.column = column;
+        this.hasMoved = false;
     }
 
     public void addToPossibleMoves(Tile tile) {
@@ -29,6 +31,14 @@ public class Piece {
 
     public void setType(String newType) {
          this.type = newType;
+    }
+
+    public void setHasMoved(Boolean moved) {
+         this.hasMoved = moved;
+    }
+
+    public boolean getHasMoved() {
+         return this.hasMoved;
     }
 
     public String getColor() {
@@ -52,11 +62,6 @@ public class Piece {
     }
 
     public ArrayList<Tile> getPossibleMoves() {
-         /*String ret = "";
-         for (int i = 0; i < this.possibleMoves.size(); i++) {
-              ret += "[" + this.possibleMoves.get(i).getRow() + "," + this.possibleMoves.get(i).getColumn() + "] ";
-         }
-         System.out.println(ret);*/
          return this.possibleMoves;
     }
 

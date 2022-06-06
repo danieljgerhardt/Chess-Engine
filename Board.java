@@ -14,6 +14,14 @@ public class Board {
           {"ee", "ee", "ee", "ee", "ee", "ee", "ee", "ee"},
           {"wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"},
           {"wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"}
+          /*{"ee", "ee", "ee", "ee", "ee", "ee", "ee", "ee"},
+          {"ee", "ee", "ee", "ee", "ee", "ee", "ee", "ee"},
+          {"ee", "ee", "ee", "ee", "bQ", "ee", "ee", "ee"},
+          {"ee", "ee", "ee", "ee", "ee", "ee", "ee", "ee"},
+          {"ee", "ee", "ee", "ee", "wQ", "ee", "ee", "ee"},
+          {"ee", "ee", "ee", "wK", "ee", "ee", "ee", "ee"},
+          {"ee", "ee", "ee", "ee", "ee", "ee", "ee", "ee"},
+          {"bK", "ee", "ee", "ee", "ee", "ee", "ee", "ee"}*/
      };
 
      public Board() {
@@ -60,6 +68,65 @@ public class Board {
                }
           }
           return null;
+     }
+
+     public ArrayList<Tile> getPathBetween(Tile tileOne, Tile tileTwo) {
+          ArrayList<Tile> tilesBetween = new ArrayList<Tile>();
+          if (Math.abs(tileTwo.getRow() - tileOne.getRow()) == Math.abs(tileTwo.getColumn() - tileOne.getColumn())) {
+               //diagonal
+               if(tileOne.getRow() > tileTwo.getRow() && tileOne.getColumn() > tileTwo.getColumn()) {
+                    //down right
+                    for (int i = 1; i < Math.abs(tileOne.getColumn() - tileTwo.getColumn()); i++) {
+                         tilesBetween.add(this.tileArray[tileTwo.getRow() + i][tileTwo.getColumn() + i]);
+                    }
+               } else if (tileOne.getRow() > tileTwo.getRow() && tileOne.getColumn() < tileTwo.getColumn()) {
+                    //down left
+                    for (int i = 1; i < Math.abs(tileOne.getColumn() - tileTwo.getColumn()); i++) {
+                         tilesBetween.add(this.tileArray[tileTwo.getRow() + i][tileTwo.getColumn() - i]);
+                    }
+
+               } else if(tileOne.getRow() < tileTwo.getRow() && tileOne.getColumn() > tileTwo.getColumn()) {
+                    //up right
+                    for (int i = 1; i < Math.abs(tileOne.getColumn() - tileTwo.getColumn()); i++) {
+                         tilesBetween.add(this.tileArray[tileTwo.getRow() - i][tileTwo.getColumn() + i]);
+                    }
+
+               } else {
+                    //up left
+                    for (int i = 1; i < Math.abs(tileOne.getColumn() - tileTwo.getColumn()); i++) {
+                         tilesBetween.add(this.tileArray[tileTwo.getRow() - i][tileTwo.getColumn() - i]);
+                    }
+               }
+
+          } else if (tileOne.getRow() == tileTwo.getRow()) {
+               //tiles connected horizontally
+               if(tileOne.getColumn() > tileTwo.getColumn()) {
+                    //tile one is right of tile two
+                    for (int i = 1; i < (tileOne.getColumn() - tileTwo.getColumn()); i++) {
+                         tilesBetween.add(this.tileArray[tileOne.getRow()][tileOne.getColumn() - i]);
+                    }
+               } else if (tileOne.getColumn() < tileTwo.getColumn()) {
+                    //tile one is left of tile two
+                    for (int i = 1; i < (tileTwo.getColumn() - tileOne.getColumn()); i++) {
+                         tilesBetween.add(this.tileArray[tileOne.getRow()][i + tileOne.getColumn()]);
+                    }
+               }
+          } else if (tileOne.getColumn() == tileTwo.getColumn()) {
+               //tiles connected vertically
+               if(tileOne.getRow() > tileTwo.getRow()) {
+                    //tile one is below tile two
+                    for (int i = 1; i < (tileOne.getRow() - tileTwo.getRow()); i++) {
+                         tilesBetween.add(this.tileArray[tileOne.getRow() - i][tileOne.getColumn()]);
+                    }
+               } else if (tileOne.getColumn() < tileTwo.getColumn()) {
+                    //tile one is above tile two
+                    for (int i = 1; i < (tileTwo.getColumn() - tileOne.getColumn()); i++) {
+                         tilesBetween.add(this.tileArray[i + tileOne.getRow()][tileOne.getColumn()]);
+                    }
+               }
+
+          }
+          return tilesBetween;
      }
 
      public void setTile(int row, int column, Piece piece) {

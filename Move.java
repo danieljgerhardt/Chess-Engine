@@ -11,6 +11,7 @@ public class Move {
      private boolean canEnPassant = false;
      private Tile enPassantTile;
      private boolean engagingEnPassant = false;
+     private boolean castle = false;
 
      public Move(Piece start, Piece end, Board board) {
           this.startingPiece = start;
@@ -40,19 +41,32 @@ public class Move {
           }
      }
 
+     public Move(Piece start, Piece end, Board board, boolean castle) {
+          this.startingPiece = start;
+          this.endingPiece = end;
+          this.board = board;
+          this.startingTile = this.board.getTileArray()[this.startingPiece.getRow()][this.startingPiece.getColumn()];
+          this.endingTile = this.board.getTileArray()[this.endingPiece.getRow()][this.endingPiece.getColumn()];
+          this.castle = castle;
+     }
+
      public boolean makeMove() {
-          if(!neutralizeThreat("w")) return false;
-          if(!neutralizeThreat("b")) return false;
+          if(!neutralizeThreats("w")) return false;
+          if(!neutralizeThreats("b")) return false;
           this.generatePossibleMoves(this.startingPiece);
           if(this.startingPiece.getPossibleMoves().contains(this.endingTile)) {
                if (engagingEnPassant) {
                     this.makeEnPassantCapture();
+               }
+               if (castle) {
+                    this.executeCastle();
                }
                Piece empty = new Piece("e", "e", this.startingPiece.getRow(), this.startingPiece.getColumn());
                this.board.setTile(this.startingPiece.getRow(), this.startingPiece.getColumn(), empty);
                this.board.setTile(this.endingPiece.getRow(), this.endingPiece.getColumn(), this.startingPiece);
                this.startingPiece.setRow(endingPiece.getRow());
                this.startingPiece.setColumn(endingPiece.getColumn());
+               this.startingPiece.setHasMoved(true);
                //check for pins
                ArrayList<Tile> postMoveThreats = new ArrayList<Tile>();
                postMoveThreats = this.detectKingThreats(this.startingPiece.getColor());
@@ -73,6 +87,43 @@ public class Move {
                return false;
           }
 
+     }
+
+     public void executeCastle() {
+          Piece whiteRook, blackRook;
+          if (this.startingPiece.getColor().equals("w")) {
+               if (this.endingTile.getColumn() == 2) {
+                    //Queen side white castling
+                    whiteRook = new Piece("R", "w", this.startingPiece.getRow(), this.startingPiece.getColumn() + 1);
+                    Piece empty = new Piece("e", "e", this.endingTile.getRow(), this.endingTile.getColumn() - 2);
+                    this.board.setTile(this.endingTile.getRow(), this.endingTile.getColumn() - 2, empty);
+                    this.board.setTile(this.startingPiece.getRow(), this.startingPiece.getColumn() - 1, whiteRook);
+                    whiteRook.setHasMoved(true);
+               } else {
+                    //King side white castling
+                    whiteRook = new Piece("R", "w", this.startingPiece.getRow(), this.startingPiece.getColumn() + 1);
+                    Piece empty = new Piece("e", "e", this.endingTile.getRow(), this.endingTile.getColumn() + 1);
+                    this.board.setTile(this.endingTile.getRow(), this.endingTile.getColumn() + 1, empty);
+                    this.board.setTile(this.startingPiece.getRow(), this.startingPiece.getColumn() + 1, whiteRook);
+                    whiteRook.setHasMoved(true);
+               }
+          } else {
+               if (this.endingTile.getColumn() == 2) {
+                    //Queen side black castling
+                    blackRook = new Piece("R", "b", this.startingPiece.getRow(), this.startingPiece.getColumn() + 1);
+                    Piece empty = new Piece("e", "e", this.endingTile.getRow(), this.endingTile.getColumn() - 2);
+                    this.board.setTile(this.endingTile.getRow(), this.endingTile.getColumn() - 2, empty);
+                    this.board.setTile(this.startingPiece.getRow(), this.startingPiece.getColumn() - 1, blackRook);
+                    blackRook.setHasMoved(true);
+               } else {
+                    //King side black castling
+                    blackRook = new Piece("R", "b", this.startingPiece.getRow(), this.startingPiece.getColumn() + 1);
+                    Piece empty = new Piece("e", "e", this.endingTile.getRow(), this.endingTile.getColumn() + 1);
+                    this.board.setTile(this.endingTile.getRow(), this.endingTile.getColumn() + 1, empty);
+                    this.board.setTile(this.startingPiece.getRow(), this.startingPiece.getColumn() + 1, blackRook);
+                    blackRook.setHasMoved(true);
+               }
+          }
      }
 
      public void makeEnPassantCapture() {
@@ -107,12 +158,30 @@ public class Move {
           return false;
      }
 
-     public boolean neutralizeThreat(String color) {
+     public boolean neutralizeThreats(String color) {
           ArrayList<Tile> threats = new ArrayList<Tile>();
           if (this.startingPiece.getColor().equals(color)) {
                threats = this.detectKingThreats(color);
-               if(threats != null && threats.size() > 0) {
+               if(threats != null && threats.size() == 1) {
                     if(!this.startingPiece.getType().equals("K")) {
+                         //block checks
+                         //for every square on a checking piece's line to the king:
+                         //determine what pieces can land on those squares
+                         //add those moves to their possible move lists
+                         Piece king = this.board.getKing(color);
+                         Tile kingTile = this.board.getTileArray()[king.getRow()][king.getColumn()];
+                         Tile checkerTile = threats.get(0);
+                         ArrayList<Tile> tilesBetween = new ArrayList<Tile>();
+                         tilesBetween = this.board.getPathBetween(kingTile, checkerTile);
+                         //if a piece of the right color can go on to tilesBetween, allow it
+                         for (Tile t : tilesBetween) {
+                              if (this.endingTile.equals(t))  {
+                                   return true;
+                              }
+                              System.out.println(t.toTileNotation());
+                         }
+
+                         //Capture checking piece
                          boolean captureChecker = false;
                          for(Tile t : threats) {
                               if (t.equals(this.endingTile)) {
@@ -123,10 +192,14 @@ public class Move {
                               return false;
                          }
                     }
+               } else if(threats != null && threats.size() == 2) {
+                    //double checks -- only allow kings to move
+                    if(!this.startingPiece.getType().equals("K")) {
+                         return false;
+                    }
                }
           }
-          //block checks
-          
+
           return true;
      }
 
@@ -179,9 +252,9 @@ public class Move {
                     threats.add(t);
                }
           }
-          /*Set<Tile> set = new HashSet<>(threats);
+          Set<Tile> set = new HashSet<>(threats);
           threats.clear();
-          threats.addAll(set);*/
+          threats.addAll(set);
           /*for(Tile t : threats) {
                if (!t.getPiece().getType().equals("e") && !t.getPiece().getColor().equals(color)) {
                     System.out.println(t.getRow() + ", " + t.getColumn());
@@ -195,11 +268,45 @@ public class Move {
 
      }
 
-     public boolean kingCanMoveToSquare(Tile tile) {
-          //Can an enemy piece see this square
-          //See what enemy pieces are viewing the square the king is trying to move to
-          //Make another generatePossibleMoves method
-          return false;
+     public ArrayList<Tile> detectThreatsToTile(String color, Tile tile) {
+          ArrayList<Tile> threats = new ArrayList<Tile>();
+          threats.clear();
+          Piece piece = tile.getPiece();
+          piece.clearPossibleMoves();
+          this.generatePossibleRookMoves(piece);
+          for (Tile t : piece.getPossibleMoves()) {
+               if ((t.getPiece().getType().equals("Q") || t.getPiece().getType().equals("R")) && !t.getPiece().getColor().equals(color)) {
+                    threats.add(t);
+               }
+          }
+          //king.clearPossibleMoves();
+          this.generatePossibleBishopMoves(piece);
+          for (Tile t : piece.getPossibleMoves()) {
+               if ((t.getPiece().getType().equals("Q") || t.getPiece().getType().equals("B")) && !t.getPiece().getColor().equals(color)) {
+                    threats.add(t);
+               }
+          }
+          //king.clearPossibleMoves();
+          this.generatePossibleKnightMoves(piece);
+          for (Tile t : piece.getPossibleMoves()) {
+               if (t.getPiece().getType().equals("N") && !t.getPiece().getColor().equals(color)) {
+                    threats.add(t);
+               }
+          }
+          Set<Tile> set = new HashSet<>(threats);
+          threats.clear();
+          threats.addAll(set);
+          /*for(Tile t : threats) {
+               if (!t.getPiece().getType().equals("e") && !t.getPiece().getColor().equals(color)) {
+                    System.out.println(t.getRow() + ", " + t.getColumn());
+               }
+          }*/
+          if (threats.size() > 0) {
+               return threats;
+          } else {
+               return null;
+          }
+
      }
 
      public void generatePossibleMoves(Piece piece) {
@@ -228,6 +335,101 @@ public class Move {
                              piece.addToPossibleMoves(board.getTileArray()[piece.getRow() + i][piece.getColumn() + j]);
                         }
                    }
+              }
+         }
+         //Castling
+         //King moves 2 squares to the outside and rook moves to the inside of the king
+         //Castling does not work if:
+         //Piece is in the way
+         //King has moved
+         //Rook on the same side of castling has moved
+         //King is in check
+         //King moves through check while Castling
+         boolean emptyBetweenRookAndKing = true;
+         if (!this.startingPiece.getHasMoved()) {
+               if(this.detectKingThreats("w") == null) {
+                    if(this.startingPiece.getColor().equals("w"))  {
+                         Piece whiteQueenRook = this.board.getTileArray()[7][0].getPiece();
+                         Piece whiteKingRook = this.board.getTileArray()[7][7].getPiece();
+                         if (this.board.getTileArray()[7][0].getPiece().getType().equals("R")) {
+                              //check if there are pieces in the middle, the rook has moved, or the king would move through check
+                              if (!whiteQueenRook.getHasMoved()) {
+                                   for (Tile t : this.board.getPathBetween(this.board.getTileArray()[7][0], this.startingTile)) {
+                                        if (!t.getPiece().getType().equals("e")) {
+                                             //there is a piece in between the king and rook
+                                             emptyBetweenRookAndKing = false;
+                                        }
+                                   }
+                                   if (emptyBetweenRookAndKing) {
+                                        //see if king would go through checks
+                                        if (this.detectThreatsToTile("w", this.board.getTileArray()[7][2]) == null && this.detectThreatsToTile("w", this.board.getTileArray()[7][3]) == null) {
+                                             //we can castle
+                                             piece.addToPossibleMoves(board.getTileArray()[this.startingPiece.getRow()][this.startingPiece.getColumn()]);
+                                        }
+                                   }
+                              }
+                         }
+                         if (this.board.getTileArray()[7][7].getPiece().getType().equals("R")) {
+                              //check if there are pieces in the middle, the rook has moved, or the king would move through check
+                              if (!whiteKingRook.getHasMoved()) {
+                                   for (Tile t: this.board.getPathBetween(this.board.getTileArray()[7][7], this.startingTile)) {
+                                        if (!t.getPiece().getType().equals("e")) {
+                                             //there is a piece in between the king and rook
+                                             emptyBetweenRookAndKing = false;
+                                        }
+                                   }
+                                   if (emptyBetweenRookAndKing) {
+                                        //see if king would go through checks
+                                        if (this.detectThreatsToTile("w", this.board.getTileArray()[7][5]) == null && this.detectThreatsToTile("w", this.board.getTileArray()[7][6]) == null) {
+                                             //we can castle
+                                             piece.addToPossibleMoves(board.getTileArray()[this.startingPiece.getRow()][this.startingPiece.getColumn()]);
+                                        }
+                                   }
+                              }
+                         }
+                    }
+              }
+              if(this.detectKingThreats("b") == null) {
+                    if(this.startingPiece.getColor().equals("b"))  {
+                         Piece blackQueenRook = this.board.getTileArray()[0][0].getPiece();
+                         Piece blackKingRook = this.board.getTileArray()[0][7].getPiece();
+                         if (this.board.getTileArray()[0][0].getPiece().getType().equals("R")) {
+                              //check if there are pieces in the middle, the rook has moved, or the king would move through check
+                              if (!blackQueenRook.getHasMoved()) {
+                                   for (Tile t: this.board.getPathBetween(this.board.getTileArray()[0][0], this.startingTile)) {
+                                        if (!t.getPiece().getType().equals("e")) {
+                                             //there is a piece in between the king and rook
+                                             emptyBetweenRookAndKing = false;
+                                        }
+                                   }
+                                   if (emptyBetweenRookAndKing) {
+                                        //see if king would go through checks
+                                        if (this.detectThreatsToTile("b", this.board.getTileArray()[0][2]) == null && this.detectThreatsToTile("b", this.board.getTileArray()[0][3]) == null) {
+                                             //we can castle
+                                             piece.addToPossibleMoves(board.getTileArray()[this.startingPiece.getRow()][this.startingPiece.getColumn()]);
+                                        }
+                                   }
+                              }
+                         }
+                         if (this.board.getTileArray()[0][7].getPiece().getType().equals("R")) {
+                              //check if there are pieces in the middle, the rook has moved, or the king would move through check
+                              if (!blackKingRook.getHasMoved()) {
+                                   for (Tile t: this.board.getPathBetween(this.board.getTileArray()[0][7], this.startingTile)) {
+                                        if (!t.getPiece().getType().equals("e")) {
+                                             //there is a piece in between the king and rook
+                                             emptyBetweenRookAndKing = false;
+                                        }
+                                   }
+                                   if (emptyBetweenRookAndKing) {
+                                        //see if king would go through checks
+                                        if (this.detectThreatsToTile("b", this.board.getTileArray()[0][5]) == null && this.detectThreatsToTile("b", this.board.getTileArray()[0][6]) == null) {
+                                             //we can castle
+                                             piece.addToPossibleMoves(board.getTileArray()[this.startingPiece.getRow()][this.startingPiece.getColumn()]);
+                                        }
+                                   }
+                              }
+                         }
+                    }
               }
          }
     }

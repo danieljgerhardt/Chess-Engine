@@ -92,6 +92,9 @@ public class DisplayGUI extends JFrame implements ActionListener {
                          if (previousMove.getStartingPiece().getType().equals("P") && previousMove.getEndingTile().getRow() == 3) {
                               //moved white pawn 2 squares on previous move -- en passant is available
                               move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard, true, previousMove.getEndingTile());
+                         } else if (piecesClicked.get(piecesClicked.size() - 2).getType().equals("K") && Math.abs((piecesClicked.get(piecesClicked.size() - 2).getColumn() - piecesClicked.get(piecesClicked.size() - 1).getColumn())) == 2) {
+                              //castling
+                              move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard, true);
                          } else {
                               move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard);
                          }
@@ -111,6 +114,9 @@ public class DisplayGUI extends JFrame implements ActionListener {
                          if (previousMove.getStartingPiece().getType().equals("P") && previousMove.getEndingTile().getRow() == 4) {
                               //moved black pawn 2 squares on previous move -- en passant is available
                               move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard, true, previousMove.getEndingTile());
+                         } else if (piecesClicked.get(piecesClicked.size() - 2).getType().equals("K") && Math.abs((piecesClicked.get(piecesClicked.size() - 2).getColumn() - piecesClicked.get(piecesClicked.size() - 1).getColumn())) == 2) {
+                              //castling
+                              move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard, true);
                          } else {
                               move = new Move(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1), this.gameBoard);
                          }
