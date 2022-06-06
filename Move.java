@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.*;
 
 public class Move {
 
@@ -38,6 +39,7 @@ public class Move {
 
      public boolean makeMove() {
           this.detectKingThreats("w");
+          this.detectKingThreats("b");
           this.generatePossibleMoves(this.startingPiece);
           if(this.startingPiece.getPossibleMoves().contains(this.endingTile)) {
                if (engagingEnPassant) {
@@ -127,14 +129,24 @@ public class Move {
                     threats.add(t);
                }
                //if (!t.getPiece().getType().equals("e") && !t.getPiece().getColor().equals("w")) {
-                    //System.out.println(t.getRow() + ", " + t.getColumn());
+               //     System.out.println(t.getRow() + ", " + t.getColumn());
                //}
           }
-          List<Tile> newList = threats.stream().distinct().collect(Collectors.toList());
-          for (Tile t : new ArrayList<Tile>(newList)) {
-               System.out.println(t.getRow() + ", " + t.getColumn());
+
+          Set<Tile> set = new HashSet<>(threats);
+          threats.clear();
+          threats.addAll(set);
+          for(Tile t : threats) {
+               if (!t.getPiece().getType().equals("e") && !t.getPiece().getColor().equals(color)) {
+                    System.out.println(t.getRow() + ", " + t.getColumn());
+               }
           }
-          return new ArrayList<Tile>(newList);
+          if (threats.size() > 0) {
+               return threats;
+          } else {
+               return null;
+          }
+
      }
 
      public boolean kingCanMoveToSquare(Tile tile) {

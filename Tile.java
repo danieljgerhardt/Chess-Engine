@@ -38,6 +38,10 @@ public class Tile {
           return this.row;
      }
 
+     public String getColor() {
+          return this.color;
+     }
+
      public int getColumn() {
           return this.column;
      }
@@ -58,8 +62,10 @@ public class Tile {
             return false;
         }
 
+        Tile test = (Tile) other;
+
         //row, column, color, piece
-        if (other.getRow() == this.getRow() && other.getColumnn() == this.getColumn() && other.getColor().equals(this.getColor()) && other.getPiece().equals(this.getPiece())) {
+        if (test.getRow() == this.getRow() && test.getColor().equals(this.getColor()) && test.getPiece().equals(this.getPiece())) {
              return true;
         } else {
              return false;
