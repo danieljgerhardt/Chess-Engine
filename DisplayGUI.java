@@ -24,15 +24,12 @@ public class DisplayGUI extends JFrame implements ActionListener {
      private JOptionPane colorSelect;
 
      private String colorChoice;
-
-     private Engine engine;
-
+     
      private Game game;
 
 
      public DisplayGUI() {
           gameBoard = new Board();
-          engine = new Engine(gameBoard);
           gameBoard.arrangePiecesWhite();
           JFrame frame = new JFrame("Chess");
           frame.setSize(1024, 1024);

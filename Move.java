@@ -147,11 +147,13 @@ public class Move {
      public boolean checkPromotion() {
           if (this.startingPiece.getType().equals("P")) {
                if (this.startingPiece.getRow() == 0) {
-                    promotion("Q", "w");
+                    this.startingPiece.setType("Q");
+                    this.board.setTile( this.endingTile.getRow(), this.endingTile.getColumn(), startingPiece);
                     return true;
                }
                if (this.startingPiece.getRow() == 7) {
-                    promotion("Q", "b");
+                    this.startingPiece.setType("Q");
+                    this.board.setTile( this.endingTile.getRow(), this.endingTile.getColumn(), startingPiece);
                     return true;
                }
           }
@@ -203,11 +205,6 @@ public class Move {
           return true;
      }
 
-     public void promotion(String newType, String color) {
-          this.startingPiece.setType("Q");
-          this.board.setTile( this.endingTile.getRow(), this.endingTile.getColumn(), startingPiece);
-    }
-
      public Tile getEndingTile() {
           return this.endingTile;
      }
@@ -238,18 +235,26 @@ public class Move {
                     threats.add(t);
                }
           }
-          //king.clearPossibleMoves();
           this.generatePossibleBishopMoves(king);
           for (Tile t : king.getPossibleMoves()) {
                if ((t.getPiece().getType().equals("Q") || t.getPiece().getType().equals("B")) && !t.getPiece().getColor().equals(color)) {
                     threats.add(t);
                }
           }
-          //king.clearPossibleMoves();
           this.generatePossibleKnightMoves(king);
           for (Tile t : king.getPossibleMoves()) {
                if (t.getPiece().getType().equals("N") && !t.getPiece().getColor().equals(color)) {
                     threats.add(t);
+               }
+          }
+          this.generatePossiblePawnMoves(king);
+          for (Tile t : king.getPossibleMoves()) {
+               if (t.getPiece().getType().equals("P") && !t.getPiece().getColor().equals(color)) {
+                    if (color.equals("w") && (t.getPiece().getRow() - king.getRow() == -1) && (Math.abs(t.getPiece().getColumn() - king.getColumn()) == 1)) {
+                         threats.add(t);
+                    } else if (color.equals("b") && (t.getPiece().getRow() - king.getRow() == 1) && (Math.abs(t.getPiece().getColumn() - king.getColumn()) == 1)) {
+                         threats.add(t);
+                    }
                }
           }
           Set<Tile> set = new HashSet<>(threats);
