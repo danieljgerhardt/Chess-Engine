@@ -27,6 +27,8 @@ public class DisplayGUI extends JFrame implements ActionListener {
 
      private Engine engine;
 
+     private Game game;
+
 
      public DisplayGUI() {
           gameBoard = new Board();
@@ -41,6 +43,7 @@ public class DisplayGUI extends JFrame implements ActionListener {
           this.addPieces();
           frame.add(buttonPanel);
           this.colorChoice = JOptionPane.showInputDialog(null, "Which color would you like to play as?");
+          game = new Game(this.moveList, this.gameBoard);
      }
 
 
@@ -81,7 +84,8 @@ public class DisplayGUI extends JFrame implements ActionListener {
                for(int j = 0; j < 8; j++) {
                     if(e.getSource() == tileButtons[i][j]) {
                          piecesClicked.add(this.gameBoard.getTileArray()[i][j].getPiece());
-                         this.executeMove();
+                         //this.executeMove();
+                         if (piecesClicked.size() > 1) this.game.executePlayerMove(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1));
                     }
                }
            }
@@ -89,7 +93,7 @@ public class DisplayGUI extends JFrame implements ActionListener {
            this.addPieces();
      }
 
-     public void executeMove() {
+     /*public void executeMove() {
           if(piecesClicked.size() % 2 == 0) {
                Move previousMove = null;
                Move move;
@@ -118,7 +122,7 @@ public class DisplayGUI extends JFrame implements ActionListener {
                     } else {
                          System.out.println("Illegal move");
                     }
-               } /*else if (!whiteToMove && piecesClicked.get(piecesClicked.size() - 2).getColor().equals("b")){
+               } /*else if (!whiteToMove && piecesClicked.get(piecesClicked.size() - 2).getColor().equals("b")){ //FIRST COMMENT SECTION START
                     if (previousMove != null) {
                          //Next line checks if en passant is legal
                          if (previousMove.getStartingPiece().getType().equals("P") && previousMove.getEndingTile().getRow() == 4) {
@@ -140,7 +144,7 @@ public class DisplayGUI extends JFrame implements ActionListener {
                     } else {
                          System.out.println("Illegal move");
                     }
-               }*/
+               } //FIRST COMMENT SECTION END
                else if (!whiteToMove && piecesClicked.get(piecesClicked.size() - 2).getColor().equals("b")){
                     Move engineMove = engine.generateMove();
                     if (previousMove != null) {
@@ -166,7 +170,7 @@ public class DisplayGUI extends JFrame implements ActionListener {
                     }
                }
           }
-     }
+     }*/
 
      public Board getBoard() {
           return this.gameBoard;
