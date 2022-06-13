@@ -21,7 +21,7 @@ public class Game {
      }
 
      //piece one and piece two are two most recent pieces in the DisplayGUI's ArrayList
-     public void executePlayerMove(Piece pieceOne, Piece pieceTwo) {
+     public boolean executePlayerMove(Piece pieceOne, Piece pieceTwo) {
           String currentColor = "";
           if (whiteToMove) {
                this.enPassantInt = WHITE_EN_PASSANT_INT;
@@ -56,11 +56,14 @@ public class Game {
                          this.moveList.add(move);
                          System.out.println(move.toString());
                          this.whiteToMove = !whiteToMove;
+                         return true;
                     } /*else {
                          System.out.println("Illegal move");
                     }*/
+
                }
           }
+          return false;
      }
 
 }
