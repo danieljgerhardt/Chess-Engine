@@ -1,6 +1,5 @@
 import java.util.*;
 
-
 public class Engine {
 
      private Board board;
@@ -9,6 +8,7 @@ public class Engine {
           this.board = b;
      }
 
+     //Currently will spit out the first move the engine sees, need to implement evaluation of positions and moves
      public Move generateMove() {
           Piece start = new Piece("e", "e", 0, 0);
           Piece end = new Piece("e", "e", 0, 0);
@@ -38,4 +38,14 @@ public class Engine {
           return move;
      }
 
+     public int evaluatePosition() {
+          //Material, king safety, piece activity
+          //Positive = better for white, negative = better for black
+          //More extreme value = higher advantage
+          if (board.getTotalPieceValue("w") > board.getTotalPieceValue("b")) {
+               return (board.getTotalPieceValue("w") -  board.getTotalPieceValue("b"));
+          } else {
+               return (board.getTotalPieceValue("w") -  board.getTotalPieceValue("b"));
+          }
+     }
 }

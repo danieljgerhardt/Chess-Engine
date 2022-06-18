@@ -43,6 +43,20 @@ public class Board {
           }
      }
 
+     public int getTotalPieceValue(String color) {
+          int totalValue = 0;
+          for (int row = 0; row < BOARD_SIZE; row++) {
+               for (int column = 0; column < BOARD_SIZE; column++) {
+                    if (!this.tileArray[row][column].getPiece().getType().equals("e")) {
+                         if (this.tileArray[row][column].getPiece().getColor().equals(color)) {
+                              totalValue += this.tileArray[row][column].getPiece().getValue();
+                         }
+                    }
+               }
+          }
+          return totalValue;
+     }
+
      public Tile[][] getTileArray() {
           return this.tileArray;
      }
