@@ -17,7 +17,7 @@ public class Board {
      };
 
      public Board() {
-          tileArray = new Tile[BOARD_SIZE][BOARD_SIZE];
+          this.tileArray = new Tile[BOARD_SIZE][BOARD_SIZE];
           String color = "";
           for (int row = 0; row < BOARD_SIZE; row++) {
                for (int column = 0; column < BOARD_SIZE; column++) {
@@ -30,6 +30,10 @@ public class Board {
                this.tileArray[row][column] = toAdd;
                }
           }
+     }
+
+     public Board(Tile[][] tileArrayForConstructor) {
+          this.tileArray = tileArrayForConstructor;
      }
 
      public void arrangePiecesWhite() {

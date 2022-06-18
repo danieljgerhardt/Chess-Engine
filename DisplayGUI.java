@@ -40,7 +40,7 @@ public class DisplayGUI extends JFrame implements ActionListener {
           this.makeGrid();
           this.addPieces();
           frame.add(buttonPanel);
-          this.colorChoice = JOptionPane.showInputDialog(null, "Which color would you like to play as?");
+          //this.colorChoice = JOptionPane.showInputDialog(null, "Which color would you like to play as?");
           game = new Game(this.moveList, this.gameBoard);
      }
 

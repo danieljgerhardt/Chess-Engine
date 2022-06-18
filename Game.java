@@ -23,6 +23,13 @@ public class Game {
           this.engine = new Engine(this.gameBoard);
      }
 
+     public Game(Board b) {
+          this.gameBoard = b;
+          this.whiteToMove = false;
+          //May need to change above if engine ever plays white
+          this.engine = new Engine(this.gameBoard);
+     }
+
      //piece one and piece two are two most recent pieces in the DisplayGUI's ArrayList
      public boolean executePlayerMove(Piece pieceOne, Piece pieceTwo) {
           String currentColor = "";
@@ -77,6 +84,7 @@ public class Game {
                this.whiteToMove = !whiteToMove;
                return true;
            }
+           System.out.println("Engine attempted illegal move");
            return false;
      }
 

@@ -86,7 +86,6 @@ public class Move {
           } else {
                return false;
           }
-
      }
 
      public void executeCastle() {
