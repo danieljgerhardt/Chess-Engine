@@ -17,8 +17,6 @@ public class DisplayGUI extends JFrame implements ActionListener {
 
      private ArrayList<Piece> piecesClicked = new ArrayList<Piece>();
 
-     private boolean whiteToMove = true;
-
      private ArrayList<Move> moveList = new ArrayList<Move>();
 
      private JOptionPane colorSelect;
@@ -26,8 +24,6 @@ public class DisplayGUI extends JFrame implements ActionListener {
      private String colorChoice;
 
      private Game game;
-
-     private int row1, col1, row2, col2; //used for tile colorization during moves
 
      private Color lightColor = new Color(238,238,210);
      private Color darkColor = new Color(118, 150, 86);
@@ -73,39 +69,18 @@ public class DisplayGUI extends JFrame implements ActionListener {
                for (int j = 0; j < 8; j++) {
                     String pieceString = this.gameBoard.getPieces()[i][j];
                     String directory = "Images/" + pieceString + ".png";
-                    //tileButtons[i][j].setIcon(new ImageIcon(directory));
                     tileButtons[i][j].setIcon(new ImageIcon(((new ImageIcon(directory).getImage().getScaledInstance(117, 117, java.awt.Image.SCALE_SMOOTH)))));
                }
           }
      }
 
      public void actionPerformed(ActionEvent e) {
-          if ((row1 + col1) % 2 == 0) {
-               tileButtons[row1][col1].setBackground(lightColor);
-          } else {
-               tileButtons[row1][col1].setBackground(darkColor);
-          }
-          if ((row2 + col2) % 2 == 0) {
-               tileButtons[row2][col2].setBackground(lightColor);
-          } else {
-               tileButtons[row2][col2].setBackground(darkColor);
-          }
           for(int i = 0; i < 8; i++) {
                for(int j = 0; j < 8; j++) {
                     if(e.getSource() == tileButtons[i][j]) {
                          piecesClicked.add(this.gameBoard.getTileArray()[i][j].getPiece());
                          if (piecesClicked.size() > 1) {
-                              if (this.game.executePlayerMove(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1))) {
-                                   //Color tiles of move
-                                   this.row1 = piecesClicked.get(piecesClicked.size() - 2).getRow();
-                                   this.col1 = piecesClicked.get(piecesClicked.size() - 2).getColumn();
-                                   this.row2 = piecesClicked.get(piecesClicked.size() - 1).getRow();
-                                   this.col2 = piecesClicked.get(piecesClicked.size() - 1).getColumn();
-
-                                   this.setTileColor(new Color(186, 202, 68), row1, col1);
-                                   this.setTileColor(new Color(186, 202, 68), row2, col2);
-                              }
-
+                              this.game.executePlayerMove(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1));
                          }
                     }
                }

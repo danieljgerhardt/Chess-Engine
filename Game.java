@@ -14,10 +14,13 @@ public class Game {
 
      private Board gameBoard;
 
+     private Engine engine;
+
      public Game(ArrayList<Move> ml, Board b) {
           this.moveList = ml;
           this.gameBoard = b;
           this.whiteToMove = true;
+          this.engine = new Engine(this.gameBoard);
      }
 
      //piece one and piece two are two most recent pieces in the DisplayGUI's ArrayList
@@ -57,13 +60,24 @@ public class Game {
                          System.out.println(move.toString());
                          this.whiteToMove = !whiteToMove;
                          return true;
-                    } /*else {
+                     } /*else {
                          System.out.println("Illegal move");
-                    }*/
+                     }*/
 
                }
           }
           return false;
+     }
+
+     public boolean executeComputerMove(Piece pieceOne, Piece pieceTwo) {
+          Move move = engine.generateMove();
+          if (move.makeMove()) {
+               this.moveList.add(move);
+               System.out.println(move.toString());
+               this.whiteToMove = !whiteToMove;
+               return true;
+           }
+           return false;
      }
 
 }

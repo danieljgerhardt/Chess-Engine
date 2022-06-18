@@ -219,6 +219,11 @@ public class Move {
           if (!this.startingPiece.getType().equals("P")) {
                ret += this.startingPiece.getType();
           }
+          /*System.out.println(this.startingPiece.getColor());
+          System.out.println(this.endingTile.getPiece().getOppositeColor());*/
+          if (this.startingPiece.getColor().equals(this.endingTile.getPiece().getOppositeColor()))  {
+               ret += "x";
+          }
           ret += this.endingTile.toTileNotation();
           return ret;
      }
