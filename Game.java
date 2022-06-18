@@ -69,7 +69,7 @@ public class Game {
           return false;
      }
 
-     public boolean executeComputerMove(Piece pieceOne, Piece pieceTwo) {
+     public boolean executeComputerMove() {
           Move move = engine.generateMove();
           if (move.makeMove()) {
                this.moveList.add(move);

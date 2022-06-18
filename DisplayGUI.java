@@ -80,7 +80,9 @@ public class DisplayGUI extends JFrame implements ActionListener {
                     if(e.getSource() == tileButtons[i][j]) {
                          piecesClicked.add(this.gameBoard.getTileArray()[i][j].getPiece());
                          if (piecesClicked.size() > 1) {
-                              this.game.executePlayerMove(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1));
+                              if (this.game.executePlayerMove(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1))) {
+                                   this.game.executeComputerMove();
+                              }
                          }
                     }
                }
