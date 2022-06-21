@@ -88,6 +88,15 @@ public class Move {
           }
      }
 
+     public void undoMove() {
+          this.board.setTile(this.startingTile.getRow(), this.startingTile.getColumn(), this.startingPiece);
+          this.board.setTile(this.endingTile.getRow(), this.endingTile.getColumn(), this.endingPiece);
+          this.startingPiece.setRow(startingTile.getRow());
+          this.startingPiece.setColumn(startingTile.getColumn());
+          this.endingPiece.setRow(endingTile.getRow());
+          this.endingPiece.setColumn(endingTile.getColumn());
+     }
+
      public void executeCastle() {
           Piece whiteRook, blackRook;
           if (this.startingPiece.getColor().equals("w")) {
@@ -232,7 +241,9 @@ public class Move {
           ArrayList<Tile> threats = new ArrayList<Tile>();
           threats.clear();
           Piece king = this.board.getKing(color);
+          //if (king.getPossibleMoves() != null && king.getPossibleMoves().size() > 0) {
           king.clearPossibleMoves();
+          //}
           this.generatePossibleRookMoves(king);
           for (Tile t : king.getPossibleMoves()) {
                if ((t.getPiece().getType().equals("Q") || t.getPiece().getType().equals("R")) && !t.getPiece().getColor().equals(color)) {

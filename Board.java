@@ -145,6 +145,10 @@ public class Board {
         this.pieces[row][column] = pieceString;
      }
 
+     public void setTileArray(Tile[][] t) {
+          this.tileArray = t;
+     }
+
      @Override
      public String toString() {
           String ret = "";

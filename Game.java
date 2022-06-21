@@ -84,7 +84,7 @@ public class Game {
                this.whiteToMove = !whiteToMove;
                return true;
            }
-           System.out.println("Engine attempted illegal move");
+           System.out.println("Engine attempted illegal move: " + move.toString());
            return false;
      }
 
