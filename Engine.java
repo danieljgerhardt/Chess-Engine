@@ -34,7 +34,6 @@ public class Engine {
                          System.out.println("CANDIDATE MOVE! " + testMove.toString());
                          candidateMoves.add(testMove);
                          testMove.undoMove();
-                         System.out.println(testMove.toString());
                     }
                }
           }
@@ -42,9 +41,7 @@ public class Engine {
           int maxIndex = 0;
           for (int i = 0; i < candidateMoves.size(); i++) {
                this.testBoard = this.getGameBoardCopy();
-               System.out.println("pre move: " + this.evaluatePosition(this.testBoard));
                candidateMoves.get(i).makeMove();
-               System.out.println("post move: " + this.evaluatePosition(this.testBoard));
                if (this.evaluatePosition(this.testBoard) < maxEval) {
                     maxIndex = i;
                     maxEval = this.evaluatePosition(this.testBoard);

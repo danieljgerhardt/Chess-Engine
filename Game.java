@@ -67,10 +67,7 @@ public class Game {
                          System.out.println(move.toString());
                          this.whiteToMove = !whiteToMove;
                          return true;
-                     } /*else {
-                         System.out.println("Illegal move");
-                     }*/
-
+                     }
                }
           }
           return false;
