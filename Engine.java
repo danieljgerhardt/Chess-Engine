@@ -25,6 +25,8 @@ public class Engine {
                }
           }
           ArrayList<Tile> possibleMovesPerPiece = new ArrayList<Tile>();
+          int maxEval = 0;
+          int maxIndex = 0;
           for (Piece piece : possibleStartingPieces) {
                possibleMovesPerPiece = piece.getPossibleMoves();
                for (int i = 0; i < possibleMovesPerPiece.size(); i++) {
@@ -33,20 +35,14 @@ public class Engine {
                     if (testMove.makeMove()) {
                          System.out.println("CANDIDATE MOVE! " + testMove.toString());
                          candidateMoves.add(testMove);
-                         testMove.undoMove();
+                         double currentEval = this.evaluatePosition(this.testBoard);
+                         if (currentEval < maxEval) {
+                              maxIndex = candidateMoves.size() - 1;
+                              maxEval = this.evaluatePosition(this.testBoard);
+                         }
                     }
+                    testMove.undoMove();
                }
-          }
-          int maxEval = 0;
-          int maxIndex = 0;
-          for (int i = 0; i < candidateMoves.size(); i++) {
-               this.testBoard = this.getGameBoardCopy();
-               candidateMoves.get(i).makeMove();
-               if (this.evaluatePosition(this.testBoard) < maxEval) {
-                    maxIndex = i;
-                    maxEval = this.evaluatePosition(this.testBoard);
-               }
-               candidateMoves.get(i).undoMove();
           }
 
           Move toMake = new Move(candidateMoves.get(maxIndex).getStartingPiece(), candidateMoves.get(maxIndex).getEndingTile().getPiece(), this.board);
