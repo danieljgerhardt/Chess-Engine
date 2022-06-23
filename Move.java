@@ -371,6 +371,7 @@ public class Move {
      }
 
     public void generatePossibleKingMoves(Piece piece) {
+         //General movement
          for (int i = -1; i < 2; i++) {
               for (int j = -1; j < 2; j++) {
                    if ((i + piece.getRow() >= 0) && (i + piece.getRow() < 8) && (j + piece.getColumn() >= 0) && (j + piece.getColumn() < 8)) {
@@ -408,11 +409,12 @@ public class Move {
                                         //see if king would go through checks
                                         if (this.detectThreatsToTile("w", this.board.getTileArray()[7][2]) == null && this.detectThreatsToTile("w", this.board.getTileArray()[7][3]) == null) {
                                              //we can castle
-                                             piece.addToPossibleMoves(board.getTileArray()[this.startingPiece.getRow()][this.startingPiece.getColumn()]);
+                                             piece.addToPossibleMoves(board.getTileArray()[this.startingPiece.getRow()][this.startingPiece.getColumn() - 2]);
                                         }
                                    }
                               }
                          }
+                         emptyBetweenRookAndKing = true;
                          if (this.board.getTileArray()[7][7].getPiece().getType().equals("R")) {
                               //check if there are pieces in the middle, the rook has moved, or the king would move through check
                               if (!whiteKingRook.getHasMoved()) {
@@ -426,7 +428,7 @@ public class Move {
                                         //see if king would go through checks
                                         if (this.detectThreatsToTile("w", this.board.getTileArray()[7][5]) == null && this.detectThreatsToTile("w", this.board.getTileArray()[7][6]) == null) {
                                              //we can castle
-                                             piece.addToPossibleMoves(board.getTileArray()[this.startingPiece.getRow()][this.startingPiece.getColumn()]);
+                                             piece.addToPossibleMoves(board.getTileArray()[this.startingPiece.getRow()][this.startingPiece.getColumn() + 2]);
                                         }
                                    }
                               }
@@ -455,6 +457,7 @@ public class Move {
                                    }
                               }
                          }
+                         emptyBetweenRookAndKing = true;
                          if (this.board.getTileArray()[0][7].getPiece().getType().equals("R")) {
                               //check if there are pieces in the middle, the rook has moved, or the king would move through check
                               if (!blackKingRook.getHasMoved()) {

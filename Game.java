@@ -57,6 +57,7 @@ public class Game {
                               enPassant = true;
                          } else if (pieceOne.getType().equals("K") && Math.abs((pieceOne.getColumn() - pieceTwo.getColumn())) == 2) {
                               //castling
+                              //System.out.println("castling triggered in game class");
                               castling = true;
                          }
                     }
