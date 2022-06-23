@@ -72,8 +72,12 @@ public class Move {
      }
 
      public boolean makeMove() {
-          if(!neutralizeThreats("w")) return false;
-          if(!neutralizeThreats("b")) return false;
+          if(!neutralizeThreats("w")) {
+               return false;
+          }
+          if(!neutralizeThreats("b")) {
+               return false;
+          }
           this.generatePossibleMoves(this.startingPiece);
           if(this.startingPiece.getPossibleMoves().contains(this.endingTile)) {
                if (engagingEnPassant) {
@@ -92,7 +96,6 @@ public class Move {
                ArrayList<Tile> postMoveThreats = new ArrayList<Tile>();
                postMoveThreats = this.detectKingThreats(this.startingPiece.getColor());
                if (postMoveThreats != null && postMoveThreats.size() > 0) {
-                    //System.out.println(this.startingPiece.toString());
                     this.board.setTile(this.startingTile.getRow(), this.startingTile.getColumn(), this.startingPiece);
                     this.board.setTile(this.endingTile.getRow(), this.endingTile.getColumn(), this.endingPiece);
                     this.startingPiece.setRow(startingTile.getRow());

@@ -40,7 +40,11 @@ public class Piece {
      }
 
      public void storePossibleMoves() {
-          this.storedMoves = this.possibleMoves;
+          for (int i = 0; i < this.possibleMoves.size(); i++) {
+               Tile toAdd = new Tile(this.possibleMoves.get(i).getRow(), this.possibleMoves.get(i).getColumn(), this.possibleMoves.get(i).getColor());
+               toAdd.setPiece(this.possibleMoves.get(i).getPiece());
+               this.storedMoves.add(toAdd);
+          }
      }
 
      public ArrayList<Tile> returnStoredPossibleMoves() {

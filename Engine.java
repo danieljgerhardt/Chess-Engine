@@ -11,6 +11,7 @@ public class Engine {
      }
 
      public Move generateMove(Move previousMove) {
+          int candidateAmount = 0;
           boolean castling = false;
           boolean enPassant = false;
           this.testBoard = this.getGameBoardCopy();
@@ -30,10 +31,8 @@ public class Engine {
           double maxEval = 0;
           int maxIndex = 0;
           for (Piece piece : possibleStartingPieces) {
-               System.out.println(piece.toString());
                possibleMovesPerPiece = piece.getPossibleMoves();
                for (int i = 0; i < possibleMovesPerPiece.size(); i++) {
-                    System.out.println(possibleMovesPerPiece.get(i).toString());
                     this.testBoard = this.getGameBoardCopy();
                     if (piece.getType().equals("K") && Math.abs((piece.getColumn() - possibleMovesPerPiece.get(i).getColumn())) == 2) {
                          castling = true;
@@ -44,11 +43,11 @@ public class Engine {
                     Move testMove = new Move(piece, possibleMovesPerPiece.get(i).getPiece(), this.testBoard, enPassant, previousMove.getEndingTile(), castling);
                     if (testMove.makeMove()) {
                          System.out.println(testMove.toString());
-                         testMove.makeMove();
+                         candidateAmount++;
                          candidateMoves.add(testMove);
                          double currentEval = this.evaluatePosition(this.testBoard);
                          int printEval = (int) Math.round(currentEval);
-                         System.out.println("CANDIDATE MOVE! " + testMove.toString());
+                         System.out.println("CANDIDATE MOVE " + candidateAmount + ": " + testMove.toString());
                          System.out.println("eval: " + printEval);
                          if (currentEval < maxEval) {
                               maxIndex = candidateMoves.size() - 1;
