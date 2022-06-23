@@ -43,6 +43,8 @@ public class Game {
           if(pieceOne.getColor().equals(currentColor)) {
                Move previousMove = null;
                Move move;
+               boolean castling = false;
+               boolean enPassant = false;
                if (this.moveList.size() > 1) {
                     previousMove = this.moveList.get(this.moveList.size() - 1);
                }
@@ -52,15 +54,16 @@ public class Game {
                          //Final number on next line is 3 for white and 4 for black
                          if (previousMove.getStartingPiece().getType().equals("P") && previousMove.getEndingTile().getRow() == this.enPassantInt) {
                               //moved pawn 2 squares on previous move -- en passant is available
-                              move = new Move(pieceOne, pieceTwo, this.gameBoard, true, previousMove.getEndingTile());
+                              enPassant = true;
                          } else if (pieceOne.getType().equals("K") && Math.abs((pieceOne.getColumn() - pieceTwo.getColumn())) == 2) {
                               //castling
-                              move = new Move(pieceOne, pieceTwo, this.gameBoard, true);
-                         } else {
-                              move = new Move(pieceOne, pieceTwo, this.gameBoard);
+                              castling = true;
                          }
-                    } else {
+                    }
+                    if (previousMove == null) {
                          move = new Move(pieceOne, pieceTwo, this.gameBoard);
+                    } else {
+                         move = new Move(pieceOne, pieceTwo, this.gameBoard, enPassant, previousMove.getEndingTile(), castling);
                     }
                     if (move.makeMove()) {
                          this.moveList.add(move);
@@ -74,7 +77,7 @@ public class Game {
      }
 
      public boolean executeComputerMove() {
-          Move move = engine.generateMove();
+          Move move = engine.generateMove(this.moveList.get(this.moveList.size() - 1));
           if (move.makeMove()) {
                this.moveList.add(move);
                System.out.println(move.toString());

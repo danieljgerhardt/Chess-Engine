@@ -9,6 +9,7 @@ public class Piece {
      private int value;
      private ArrayList<Tile> possibleMoves = new ArrayList<Tile>(); //This is a list of all possible moves INCLUDING illegal moves
      private boolean hasMoved;
+     private ArrayList<Tile> storedMoves = new ArrayList<Tile>();
 
      public Piece(String type, String color, int row, int column) {
           this.type = type;
@@ -36,6 +37,14 @@ public class Piece {
                     this.value = 150;
                     break;
           }
+     }
+
+     public void storePossibleMoves() {
+          this.storedMoves = this.possibleMoves;
+     }
+
+     public ArrayList<Tile> returnStoredPossibleMoves() {
+          return this.storedMoves;
      }
 
      public void addToPossibleMoves(Tile tile) {

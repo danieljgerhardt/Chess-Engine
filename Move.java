@@ -50,6 +50,27 @@ public class Move {
           this.castle = castle;
      }
 
+     public Move(Piece start, Piece end, Board board, boolean enPassantAbility, Tile enPassantTile, boolean castle) {
+          this.startingPiece = start;
+          this.endingPiece = end;
+          this.board = board;
+          this.startingTile = this.board.getTileArray()[this.startingPiece.getRow()][this.startingPiece.getColumn()];
+          this.endingTile = this.board.getTileArray()[this.endingPiece.getRow()][this.endingPiece.getColumn()];
+          this.canEnPassant = enPassantAbility;
+          this.enPassantTile = enPassantTile;
+          //Make engagingEnPassant true if this move is en passant
+          if (this.startingPiece.getColor().equals("w")){
+               if (this.startingPiece.getType().equals("P") && this.endingTile.getRow() + 1 == this.startingPiece.getRow()) {
+                    this.engagingEnPassant = true;
+               }
+          } else {
+               if (this.startingPiece.getType().equals("P") && this.endingTile.getRow() - 1 == this.startingPiece.getRow()) {
+                    this.engagingEnPassant = true;
+               }
+          }
+          this.castle = castle;
+     }
+
      public boolean makeMove() {
           if(!neutralizeThreats("w")) return false;
           if(!neutralizeThreats("b")) return false;
@@ -209,7 +230,6 @@ public class Move {
                     }
                }
           }
-
           return true;
      }
 
@@ -242,6 +262,7 @@ public class Move {
           threats.clear();
           Piece king = this.board.getKing(color);
           if (king == null) return null;
+          king.storePossibleMoves();
           king.clearPossibleMoves();
           this.generatePossibleRookMoves(king);
           for (Tile t : king.getPossibleMoves()) {
@@ -271,6 +292,10 @@ public class Move {
                     }
                }
           }
+          king.clearPossibleMoves();
+          for (Tile t : king.returnStoredPossibleMoves()) {
+               king.addToPossibleMoves(t);
+          }
           Set<Tile> set = new HashSet<>(threats);
           threats.clear();
           threats.addAll(set);
@@ -293,20 +318,21 @@ public class Move {
                     threats.add(t);
                }
           }
-          //king.clearPossibleMoves();
+          //piece.clearPossibleMoves();
           this.generatePossibleBishopMoves(piece);
           for (Tile t : piece.getPossibleMoves()) {
                if ((t.getPiece().getType().equals("Q") || t.getPiece().getType().equals("B")) && !t.getPiece().getColor().equals(color)) {
                     threats.add(t);
                }
           }
-          //king.clearPossibleMoves();
+          //piece.clearPossibleMoves();
           this.generatePossibleKnightMoves(piece);
           for (Tile t : piece.getPossibleMoves()) {
                if (t.getPiece().getType().equals("N") && !t.getPiece().getColor().equals(color)) {
                     threats.add(t);
                }
           }
+          //piece.clearPossibleMoves();
           Set<Tile> set = new HashSet<>(threats);
           threats.clear();
           threats.addAll(set);
@@ -362,7 +388,7 @@ public class Move {
          boolean emptyBetweenRookAndKing = true;
          if (!this.startingPiece.getHasMoved()) {
               //following line could be causing issues with castling out of check
-               if(this.detectKingThreats("w") == null || this.detectKingThreats("w").size() == 0) {
+               if(this.detectKingThreats("w") == null) {
                     if(this.startingPiece.getColor().equals("w"))  {
                          Piece whiteQueenRook = this.board.getTileArray()[7][0].getPiece();
                          Piece whiteKingRook = this.board.getTileArray()[7][7].getPiece();
@@ -404,7 +430,7 @@ public class Move {
                          }
                     }
               }
-              if(this.detectKingThreats("b") == null || this.detectKingThreats("b").size() == 0) {
+              if(this.detectKingThreats("b") == null) {
                     if(this.startingPiece.getColor().equals("b"))  {
                          Piece blackQueenRook = this.board.getTileArray()[0][0].getPiece();
                          Piece blackKingRook = this.board.getTileArray()[0][7].getPiece();
