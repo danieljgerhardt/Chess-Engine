@@ -61,6 +61,22 @@ public class Board {
           return totalValue;
      }
 
+     public Board getBoardCopy() {
+          //board copy used to test moves
+          Board boardCopy = new Board();
+          Tile[][] tileArrayCopy = new Tile[8][8];
+          for (int row = 0; row < 8; row++) {
+               for (int column = 0; column < 8; column++) {
+                    Tile currentTile = this.getTileArray()[row][column];
+                    Tile toAdd = new Tile(currentTile.getRow(), currentTile.getColumn(), currentTile.getColor());
+                    toAdd.setPiece(currentTile.getPiece());
+                    tileArrayCopy[row][column] = toAdd;
+               }
+          }
+          boardCopy.setTileArray(tileArrayCopy);
+          return boardCopy;
+     }
+
      public Tile[][] getTileArray() {
           return this.tileArray;
      }

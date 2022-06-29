@@ -86,22 +86,12 @@ public class Move {
                if (castle) {
                     this.executeCastle();
                }
-               Piece empty = new Piece("e", "e", this.startingPiece.getRow(), this.startingPiece.getColumn());
-               this.board.setTile(this.startingPiece.getRow(), this.startingPiece.getColumn(), empty);
-               this.board.setTile(this.endingPiece.getRow(), this.endingPiece.getColumn(), this.startingPiece);
-               this.startingPiece.setRow(endingPiece.getRow());
-               this.startingPiece.setColumn(endingPiece.getColumn());
-               this.startingPiece.setHasMoved(true);
+               this.executeMove();
                //check for pins
                ArrayList<Tile> postMoveThreats = new ArrayList<Tile>();
                postMoveThreats = this.detectKingThreats(this.startingPiece.getColor());
                if (postMoveThreats != null && postMoveThreats.size() > 0) {
-                    this.board.setTile(this.startingTile.getRow(), this.startingTile.getColumn(), this.startingPiece);
-                    this.board.setTile(this.endingTile.getRow(), this.endingTile.getColumn(), this.endingPiece);
-                    this.startingPiece.setRow(startingTile.getRow());
-                    this.startingPiece.setColumn(startingTile.getColumn());
-                    this.endingPiece.setRow(endingTile.getRow());
-                    this.endingPiece.setColumn(endingTile.getColumn());
+                    this.undoMove();
                     return false;
                }
                //execute promotion
@@ -110,6 +100,15 @@ public class Move {
           } else {
                return false;
           }
+     }
+
+     public void executeMove() {
+          Piece empty = new Piece("e", "e", this.startingPiece.getRow(), this.startingPiece.getColumn());
+          this.board.setTile(this.startingPiece.getRow(), this.startingPiece.getColumn(), empty);
+          this.board.setTile(this.endingPiece.getRow(), this.endingPiece.getColumn(), this.startingPiece);
+          this.startingPiece.setRow(endingPiece.getRow());
+          this.startingPiece.setColumn(endingPiece.getColumn());
+          this.startingPiece.setHasMoved(true);
      }
 
      public void undoMove() {
@@ -295,6 +294,9 @@ public class Move {
                     }
                }
           }
+          for (int i = 0; i < threats.size(); i++) {
+               System.out.println(threats.get(i).toString());
+          }
           king.clearPossibleMoves();
           for (Tile t : king.returnStoredPossibleMoves()) {
                king.addToPossibleMoves(t);
@@ -370,9 +372,9 @@ public class Move {
           }
      }
 
-    public void generatePossibleKingMoves(Piece piece) {
-         //General movement
-         for (int i = -1; i < 2; i++) {
+     public void generatePossibleKingMoves(Piece piece) {
+          //General movement
+          for (int i = -1; i < 2; i++) {
               for (int j = -1; j < 2; j++) {
                    if ((i + piece.getRow() >= 0) && (i + piece.getRow() < 8) && (j + piece.getColumn() >= 0) && (j + piece.getColumn() < 8)) {
                         if (!this.board.getTileArray()[i + piece.getRow()][j + piece.getColumn()].getPiece().getColor().equals(piece.getColor())) {
@@ -380,18 +382,18 @@ public class Move {
                         }
                    }
               }
-         }
-         //Castling
-         //King moves 2 squares to the outside and rook moves to the inside of the king
-         //Castling does not work if:
-         //Piece is in the way
-         //King has moved
-         //Rook on the same side of castling has moved
-         //King is in check
-         //King moves through check while Castling
-         boolean emptyBetweenRookAndKing = true;
-         if (!this.startingPiece.getHasMoved()) {
-              //following line could be causing issues with castling out of check
+          }
+          //Castling
+          //King moves 2 squares to the outside and rook moves to the inside of the king
+          //Castling does not work if:
+          //Piece is in the way
+          //King has moved
+          //Rook on the same side of castling has moved
+          //King is in check
+          //King moves through check while Castling
+          boolean emptyBetweenRookAndKing = true;
+          if (!this.startingPiece.getHasMoved()) {
+               //following line could be causing issues with castling out of check
                if(this.detectKingThreats("w") == null) {
                     if(this.startingPiece.getColor().equals("w"))  {
                          Piece whiteQueenRook = this.board.getTileArray()[7][0].getPiece();
@@ -591,6 +593,7 @@ public class Move {
     }
 
     public void generatePossibleKnightMoves(Piece piece) {
+         //Add 2 to column, add/subtract 1 from row
          if (piece.getColumn() + 2 < 8) {
               if (piece.getRow() + 1 < 8) {
                    if (!this.board.getTileArray()[piece.getRow() + 1][piece.getColumn() + 2].getPiece().getColor().equals(piece.getColor())) {
@@ -706,5 +709,25 @@ public class Move {
 
          }
     }
+
+     @Override
+     public boolean equals(Object other) {
+          if (other == this) {
+               return true;
+          }
+
+          if (!(other instanceof Move)) {
+               return false;
+          }
+
+          Move test = (Move) other;
+
+          //row, column, color, piece
+          if (test.getStartingPiece() == this.getStartingPiece() && test.getEndingTile() == this.getEndingTile()) {
+               return true;
+          } else {
+               return false;
+          }
+     }
 
 }
