@@ -88,7 +88,7 @@ public class Board {
      public Piece getKing(String color) {
           for (int row = 0; row < BOARD_SIZE; row++) {
                for (int column = 0; column < BOARD_SIZE; column++) {
-                    if (pieces[row][column].equals(color + "K")) {
+                    if (tileArray[row][column].getPiece().toString().equals(color + "K" + " ")) {
                          return tileArray[row][column].getPiece();
                     }
                }

@@ -85,6 +85,7 @@ public class Game {
                this.whiteToMove = !whiteToMove;
                return true;
            }
+           System.out.println(move.getStartingPiece().getRow() + ", " + move.getStartingPiece().getColumn());
            System.out.println("Engine attempted illegal move: " + move.toString());
            return false;
      }

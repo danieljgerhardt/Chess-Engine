@@ -261,46 +261,41 @@ public class Move {
      public ArrayList<Tile> detectKingThreats(String color) {
           //Detect all possible threats on straights, diagonals, and knight jumps
           ArrayList<Tile> threats = new ArrayList<Tile>();
-          threats.clear();
-          Piece king = this.board.getKing(color);
-          if (king == null) return null;
-          king.storePossibleMoves();
-          king.clearPossibleMoves();
-          this.generatePossibleRookMoves(king);
-          for (Tile t : king.getPossibleMoves()) {
+          Piece copyKing = new Piece("K", color, this.board.getKing(color).getRow(), this.board.getKing(color).getColumn());
+          if (copyKing == null) return null;
+          this.generatePossibleRookMoves(copyKing);
+          for (Tile t : copyKing.getPossibleMoves()) {
                if ((t.getPiece().getType().equals("Q") || t.getPiece().getType().equals("R")) && !t.getPiece().getColor().equals(color)) {
                     threats.add(t);
                }
           }
-          this.generatePossibleBishopMoves(king);
-          for (Tile t : king.getPossibleMoves()) {
+          this.generatePossibleBishopMoves(copyKing);
+          for (Tile t : copyKing.getPossibleMoves()) {
                if ((t.getPiece().getType().equals("Q") || t.getPiece().getType().equals("B")) && !t.getPiece().getColor().equals(color)) {
                     threats.add(t);
                }
           }
-          this.generatePossibleKnightMoves(king);
-          for (Tile t : king.getPossibleMoves()) {
+          //This is removing a lot of possible king moves that it shouldn't
+          this.generatePossibleKnightMoves(copyKing);
+          for (Tile t : copyKing.getPossibleMoves()) {
                if (t.getPiece().getType().equals("N") && !t.getPiece().getColor().equals(color)) {
                     threats.add(t);
                }
           }
-          this.generatePossiblePawnMoves(king);
-          for (Tile t : king.getPossibleMoves()) {
+          this.generatePossiblePawnMoves(copyKing);
+          for (Tile t : copyKing.getPossibleMoves()) {
                if (t.getPiece().getType().equals("P") && !t.getPiece().getColor().equals(color)) {
-                    if (color.equals("w") && (t.getPiece().getRow() - king.getRow() == -1) && (Math.abs(t.getPiece().getColumn() - king.getColumn()) == 1)) {
+                    if (color.equals("w") && (t.getPiece().getRow() - copyKing.getRow() == -1) && (Math.abs(t.getPiece().getColumn() - copyKing.getColumn()) == 1)) {
                          threats.add(t);
-                    } else if (color.equals("b") && (t.getPiece().getRow() - king.getRow() == 1) && (Math.abs(t.getPiece().getColumn() - king.getColumn()) == 1)) {
+                    } else if (color.equals("b") && (t.getPiece().getRow() - copyKing.getRow() == 1) && (Math.abs(t.getPiece().getColumn() - copyKing.getColumn()) == 1)) {
                          threats.add(t);
                     }
                }
           }
-          for (int i = 0; i < threats.size(); i++) {
+          copyKing.clearPossibleMoves();
+          /*for (int i = 0; i < threats.size(); i++) {
                System.out.println(threats.get(i).toString());
-          }
-          king.clearPossibleMoves();
-          for (Tile t : king.returnStoredPossibleMoves()) {
-               king.addToPossibleMoves(t);
-          }
+          }*/
           Set<Tile> set = new HashSet<>(threats);
           threats.clear();
           threats.addAll(set);

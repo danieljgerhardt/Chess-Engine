@@ -51,6 +51,10 @@ public class Piece {
           return this.storedMoves;
      }
 
+     public void restorePossibleMoves() {
+          this.possibleMoves = this.storedMoves;
+     }
+
      public void addToPossibleMoves(Tile tile) {
          this.possibleMoves.add(tile);
      }

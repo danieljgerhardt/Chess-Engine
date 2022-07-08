@@ -69,6 +69,7 @@ public class DisplayGUI extends JFrame implements ActionListener {
                for (int j = 0; j < 8; j++) {
                     String pieceString = this.gameBoard.getPieces()[i][j];
                     String directory = "Images/" + pieceString + ".png";
+                    //Scaling = 117
                     tileButtons[i][j].setIcon(new ImageIcon(((new ImageIcon(directory).getImage().getScaledInstance(117, 117, java.awt.Image.SCALE_SMOOTH)))));
                }
           }
@@ -81,6 +82,7 @@ public class DisplayGUI extends JFrame implements ActionListener {
                          piecesClicked.add(this.gameBoard.getTileArray()[i][j].getPiece());
                          if (piecesClicked.size() > 1) {
                               if (this.game.executePlayerMove(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1))) {
+                                   this.addPieces();
                                    this.game.executeComputerMove();
                               }
                          }

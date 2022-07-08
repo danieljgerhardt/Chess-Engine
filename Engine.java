@@ -44,12 +44,11 @@ public class Engine {
                     Move testMove = new Move(piece, possibleMovesPerPiece.get(i).getPiece(), this.testBoard, enPassant, previousMove.getEndingTile(), castling);
                     if (testMove.makeMove()) {
                          double currentEval = this.evaluatePosition(this.testBoard);
-                         System.out.println(testMove.toString());
                          candidateAmount++;
                          candidateMoves.add(testMove);
-                         int printEval = (int) Math.round(currentEval);
-                         System.out.println("CANDIDATE MOVE " + candidateAmount + ": " + testMove.toString());
-                         System.out.println("eval: " + printEval);
+                         //int printEval = (int) Math.round(currentEval);
+                         //System.out.println("CANDIDATE MOVE " + candidateAmount + ": " + testMove.toString());
+                         //System.out.println("eval: " + printEval);
                          if (currentEval < maxEval) {
                               maxIndex = candidateMoves.size() - 1;
                               maxEval = currentEval;
@@ -64,11 +63,41 @@ public class Engine {
           return toMake;
      }
 
-     public double evaluatePosition(Board b) {
+     public double evaluatePosition(Board board) {
           //Material, king safety, piece activity
           //Positive = better for white, negative = better for black
           //More extreme value = higher advantage
           //System.out.println((b.getTotalPieceValue("w") -  b.getTotalPieceValue("b")));
-          return (b.getTotalPieceValue("w") -  b.getTotalPieceValue("b"));
+
+          double materialEval = board.getTotalPieceValue("w") -  board.getTotalPieceValue("b");
+          //pawns on the same column(pawn structure eval)
+          //double pawnStructureEval = this.pawnStructureEval(board, "w") - this.pawnStructureEval(board, "b");
+          //hanging pieces
+
+          //bishop pair
+
+          //centralized pieces
+
+          //knights on the edge
+
+
+          //double totalEval = (materialEval * .9) + (pawnStructureEval * .1);
+          //return totalEval;
+          return materialEval;
+     }
+
+     public int pawnStructureEval(Board board, String color) {
+          int columns = 0;
+          for (int column = 0; column < 8; column++) {
+               int pawnsPerColumn = 0;
+               for (int row = 0; row < 8; row++) {
+                    if (board.getTileArray()[row][column].getPiece().getType().equals("P") && board.getTileArray()[row][column].getPiece().getColor().equals(color)) {
+                         pawnsPerColumn++;
+                    }
+               }
+               if (pawnsPerColumn > 1) columns++;
+          }
+          if (columns > 0) System.out.println("PAWN STRUCTURE");
+          return columns;
      }
 }
