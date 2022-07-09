@@ -90,7 +90,9 @@ public class Move {
                //check for pins
                ArrayList<Tile> postMoveThreats = new ArrayList<Tile>();
                postMoveThreats = this.detectKingThreats(this.startingPiece.getColor());
+
                if (postMoveThreats != null && postMoveThreats.size() > 0) {
+                    //System.out.println("POST MOVE THREAT " + postMoveThreats.get(0).toString());
                     this.undoMove();
                     return false;
                }
@@ -374,6 +376,7 @@ public class Move {
                    if ((i + piece.getRow() >= 0) && (i + piece.getRow() < 8) && (j + piece.getColumn() >= 0) && (j + piece.getColumn() < 8)) {
                         if (!this.board.getTileArray()[i + piece.getRow()][j + piece.getColumn()].getPiece().getColor().equals(piece.getColor())) {
                              piece.addToPossibleMoves(board.getTileArray()[piece.getRow() + i][piece.getColumn() + j]);
+                             //System.out.println("KING MOVE " + board.getTileArray()[piece.getRow() + i][piece.getColumn() + j].getRow() + ", " + board.getTileArray()[piece.getRow() + i][piece.getColumn() + j].getColumn());
                         }
                    }
               }

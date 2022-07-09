@@ -46,9 +46,9 @@ public class Engine {
                          double currentEval = this.evaluatePosition(this.testBoard);
                          candidateAmount++;
                          candidateMoves.add(testMove);
-                         //int printEval = (int) Math.round(currentEval);
-                         //System.out.println("CANDIDATE MOVE " + candidateAmount + ": " + testMove.toString());
-                         //System.out.println("eval: " + printEval);
+                         int printEval = (int) Math.round(currentEval);
+                         System.out.println("CANDIDATE MOVE " + candidateAmount + ": " + testMove.toString());
+                         System.out.println("eval: " + printEval);
                          if (currentEval < maxEval) {
                               maxIndex = candidateMoves.size() - 1;
                               maxEval = currentEval;
@@ -58,6 +58,11 @@ public class Engine {
                     castling = false;
                     enPassant = false;
                }
+          }
+          if (candidateMoves.size() < 1) {
+               System.out.println("ENGINE HAS NO MOVES -- GAME OVER");
+               System.out.println(this.board.toString());
+               System.exit(0);
           }
           Move toMake = new Move(candidateMoves.get(maxIndex).getStartingPiece(), candidateMoves.get(maxIndex).getEndingTile().getPiece(), this.board, enPassant, previousMove.getEndingTile(), castling);
           return toMake;

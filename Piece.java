@@ -7,7 +7,7 @@ public class Piece {
      private int row;
      private int column;
      private int value;
-     private ArrayList<Tile> possibleMoves = new ArrayList<Tile>(); //This is a list of all possible moves INCLUDING illegal moves
+     private ArrayList<Tile> possibleMoves = new ArrayList<Tile>(); //This is a list of all possible moves INCLUDING illegal moves and on the board
      private boolean hasMoved;
      private ArrayList<Tile> storedMoves = new ArrayList<Tile>();
 

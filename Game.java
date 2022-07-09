@@ -71,7 +71,7 @@ public class Game {
                          System.out.println(move.toString());
                          this.whiteToMove = !whiteToMove;
                          return true;
-                     }
+                    }
                }
           }
           return false;

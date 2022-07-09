@@ -98,6 +98,11 @@ public class DisplayGUI extends JFrame implements ActionListener {
           return this.gameBoard;
      }
 
+     public void displayEndScreen() {
+          System.out.println("GAME OVER");
+          System.exit(0);
+     }
+
      public static void main(String[] args) {
           DisplayGUI GUI = new DisplayGUI();
      }
