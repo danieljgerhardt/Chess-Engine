@@ -86,7 +86,7 @@ public class Tile {
      @Override
      public String toString() {
           //return row + ", " + column + ", " + color + "\n";
-          return this.piece.getColor() + this.piece.getType() + " ";
+          return this.piece.getColor() + this.piece.getType() + " on " + this.row + ", " + this.column;
      }
 
      @Override

@@ -92,7 +92,7 @@ public class Move {
                postMoveThreats = this.detectKingThreats(this.startingPiece.getColor());
 
                if (postMoveThreats != null && postMoveThreats.size() > 0) {
-                    //System.out.println("POST MOVE THREAT " + postMoveThreats.get(0).toString());
+                    System.out.println("POST MOVE THREAT " + postMoveThreats.get(0).toString());
                     this.undoMove();
                     return false;
                }
@@ -271,19 +271,21 @@ public class Move {
                     threats.add(t);
                }
           }
+          copyKing.clearPossibleMoves();
           this.generatePossibleBishopMoves(copyKing);
           for (Tile t : copyKing.getPossibleMoves()) {
                if ((t.getPiece().getType().equals("Q") || t.getPiece().getType().equals("B")) && !t.getPiece().getColor().equals(color)) {
                     threats.add(t);
                }
           }
-          //This is removing a lot of possible king moves that it shouldn't
+          copyKing.clearPossibleMoves();
           this.generatePossibleKnightMoves(copyKing);
           for (Tile t : copyKing.getPossibleMoves()) {
-               if (t.getPiece().getType().equals("N") && !t.getPiece().getColor().equals(color)) {
+               if ((t.getPiece().getType().equals("N")) && (!t.getPiece().getColor().equals(color))) {
                     threats.add(t);
                }
           }
+          copyKing.clearPossibleMoves();
           this.generatePossiblePawnMoves(copyKing);
           for (Tile t : copyKing.getPossibleMoves()) {
                if (t.getPiece().getType().equals("P") && !t.getPiece().getColor().equals(color)) {

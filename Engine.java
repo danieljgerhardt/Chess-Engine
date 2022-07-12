@@ -76,7 +76,7 @@ public class Engine {
 
           double materialEval = board.getTotalPieceValue("w") -  board.getTotalPieceValue("b");
           //pawns on the same column(pawn structure eval)
-          //double pawnStructureEval = this.pawnStructureEval(board, "w") - this.pawnStructureEval(board, "b");
+          double pawnStructureEval = this.pawnStructureEval(board, "w") - this.pawnStructureEval(board, "b");
           //hanging pieces
 
           //bishop pair
@@ -86,9 +86,9 @@ public class Engine {
           //knights on the edge
 
 
-          //double totalEval = (materialEval * .9) + (pawnStructureEval * .1);
-          //return totalEval;
-          return materialEval;
+          double totalEval = (materialEval * .9) + (pawnStructureEval * .1);
+          return totalEval;
+          //return materialEval;
      }
 
      public int pawnStructureEval(Board board, String color) {
