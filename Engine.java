@@ -39,7 +39,7 @@ public class Engine {
                     if (piece.getType().equals("K") && Math.abs((piece.getColumn() - possibleMovesPerPiece.get(i).getColumn())) == 2) {
                          castling = true;
                     }
-                    if (previousMove.getStartingPiece().getType().equals("P") && previousMove.getEndingTile().getRow() == 4) {
+                    if (previousMove.getStartingPiece().getType().equals("P") && previousMove.getStartingPiece().getRow() == 2 && piece.getType().equals("P")) { //this line is questionable
                          enPassant = true;
                     }
                     Move testMove = new Move(piece, possibleMovesPerPiece.get(i).getPiece(), this.testBoard, enPassant, previousMove.getEndingTile(), castling);
@@ -47,7 +47,7 @@ public class Engine {
                          currentEval = this.evaluatePosition(this.testBoard);
                          candidateAmount++;
                          candidateMoves.add(testMove);
-                         //System.out.println("CANDIDATE MOVE " + candidateAmount + ": " + testMove.toString() + "; EVAL: " + currentEval);
+                         System.out.println("Candidate " + candidateAmount + ": " + testMove.toString() + "; EVAL: " + currentEval);
                          if (currentEval < bestEval) {
                               bestIndex = candidateAmount - 1;
                               bestEval = currentEval;
@@ -86,36 +86,39 @@ public class Engine {
 
           //knights on the edge
 
+          //more empty squares near a king
 
-          double totalEval = (materialEval * .7) + (pawnStructureEval * .15) + (bishopPairEval * .15);
+          double totalEval = (materialEval * .9) + (pawnStructureEval * .05) + (bishopPairEval * .05);
           return totalEval;
-          //return materialEval;
      }
 
      public int pawnStructureEval(Board board) {
-          int columnsDifferential = 0;
+          int whitePawnsPerColumn = 0;
+          int blackPawnsPerColumn = 0;
+          int whiteBadColumns = 0;
+          int blackBadColumns = 0;
           for (int column = 0; column < 8; column++) {
-               int whitePawnsPerColumn = 0;
-               int blackPawnsPerColumn = 0;
+               whitePawnsPerColumn = 0;
+               blackPawnsPerColumn = 0;
                for (int row = 0; row < 8; row++) {
-                    if (board.getTileArray()[row][column].getPiece().getType().equals("P")) {
-                         if (board.getTileArray()[row][column].getPiece().getColor().equals("w")) {
+                    Piece test = board.getTileArray()[row][column].getPiece();
+                    if (test.getType().equals("P")) {
+                         if (test.getColor().equals("w")) {
                               whitePawnsPerColumn++;
-                              System.out.println(column);
-                         } else if (board.getTileArray()[row][column].getPiece().getColor().equals("b")) {
+                              //System.out.println("white pawn " + row + ", " + column);
+                         } else if (test.getColor().equals("b")) {
                               blackPawnsPerColumn++;
-                              System.out.println(column);
+                              //System.out.println("black pawn " + row + ", " + column);
                          }
                     }
                }
                if (whitePawnsPerColumn > 1) {
-                    columnsDifferential++;
+                    whiteBadColumns++;
                } else if (blackPawnsPerColumn > 1){
-                    columnsDifferential--;
+                    blackBadColumns++;
                }
           }
-          System.out.println("CD " + columnsDifferential);
-          return columnsDifferential;
+          return blackBadColumns - whiteBadColumns;
      }
 
      public int bishopPairEval(Board board) {
