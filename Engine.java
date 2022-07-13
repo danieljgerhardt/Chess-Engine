@@ -28,8 +28,9 @@ public class Engine {
                }
           }
           ArrayList<Tile> possibleMovesPerPiece = new ArrayList<Tile>();
-          double maxEval = 0;
-          int maxIndex = 0;
+          double currentEval = 0;
+          double betterEval = 0;
+          int betterIndex = 0;
           for (Piece piece : possibleStartingPieces) {
                possibleMovesPerPiece = piece.getPossibleMoves();
                for (int i = 0; i < possibleMovesPerPiece.size(); i++) {
@@ -43,15 +44,14 @@ public class Engine {
                     }
                     Move testMove = new Move(piece, possibleMovesPerPiece.get(i).getPiece(), this.testBoard, enPassant, previousMove.getEndingTile(), castling);
                     if (testMove.makeMove()) {
-                         double currentEval = this.evaluatePosition(this.testBoard);
+                         currentEval = this.evaluatePosition(this.testBoard);
                          candidateAmount++;
                          candidateMoves.add(testMove);
-                         int printEval = (int) Math.round(currentEval);
-                         System.out.println("CANDIDATE MOVE " + candidateAmount + ": " + testMove.toString());
-                         System.out.println("eval: " + printEval);
-                         if (currentEval < maxEval) {
-                              maxIndex = candidateMoves.size() - 1;
-                              maxEval = currentEval;
+                         //System.out.println("CANDIDATE MOVE " + candidateAmount + ": " + testMove.toString() + "; EVAL: " + currentEval);
+                         if (currentEval < betterEval) {
+                              betterIndex = candidateAmount - 1;
+                              betterEval = currentEval;
+                              //System.out.println("new better index: " + betterIndex);
                          }
                     }
                     testMove.undoMove();
@@ -64,7 +64,7 @@ public class Engine {
                System.out.println(this.board.toString());
                System.exit(0);
           }
-          Move toMake = new Move(candidateMoves.get(maxIndex).getStartingPiece(), candidateMoves.get(maxIndex).getEndingTile().getPiece(), this.board, enPassant, previousMove.getEndingTile(), castling);
+          Move toMake = new Move(candidateMoves.get(betterIndex).getStartingPiece(), candidateMoves.get(betterIndex).getEndingTile().getPiece(), this.board, enPassant, previousMove.getEndingTile(), castling);
           return toMake;
      }
 
@@ -74,9 +74,9 @@ public class Engine {
           //More extreme value = higher advantage
           //System.out.println((b.getTotalPieceValue("w") -  b.getTotalPieceValue("b")));
 
-          double materialEval = board.getTotalPieceValue("w") -  board.getTotalPieceValue("b");
+          double materialEval = board.getTotalPieceValue("w") - board.getTotalPieceValue("b");
           //pawns on the same column(pawn structure eval)
-          double pawnStructureEval = this.pawnStructureEval(board, "w") - this.pawnStructureEval(board, "b");
+          double pawnStructureEval = this.pawnStructureEval(board, "b") - this.pawnStructureEval(board, "w");
           //hanging pieces
 
           //bishop pair
@@ -97,12 +97,14 @@ public class Engine {
                int pawnsPerColumn = 0;
                for (int row = 0; row < 8; row++) {
                     if (board.getTileArray()[row][column].getPiece().getType().equals("P") && board.getTileArray()[row][column].getPiece().getColor().equals(color)) {
+                         //System.out.println("-------- " + color);
+                         //System.out.println(color + " pawn in column " + column);
                          pawnsPerColumn++;
                     }
                }
                if (pawnsPerColumn > 1) columns++;
           }
-          if (columns > 0) System.out.println("PAWN STRUCTURE");
+          //if (columns > 0) System.out.println("PAWN STRUCTURE");
           return columns;
      }
 }
