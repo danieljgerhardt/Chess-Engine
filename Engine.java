@@ -48,10 +48,12 @@ public class Engine {
                          candidateAmount++;
                          candidateMoves.add(testMove);
                          System.out.println("Candidate " + candidateAmount + ": " + testMove.toString() + "; EVAL: " + currentEval);
+                         //this next line doesn't always engage when it should
+                         //System.out.println("c " + currentEval + " b " + bestEval);
                          if (currentEval < bestEval) {
                               bestIndex = candidateAmount - 1;
                               bestEval = currentEval;
-                              //System.out.println("new better index: " + bestIndex);
+                              System.out.println("new better index: " + bestIndex);
                          }
                     }
                     testMove.undoMove();
@@ -64,29 +66,31 @@ public class Engine {
                System.out.println(this.board.toString());
                System.exit(0);
           }
-          System.out.println("Eval: " + bestEval);
+          System.out.println("Selected Candidate Move " + (bestIndex + 1) + " ; Eval: " + bestEval);
           Move toMake = new Move(candidateMoves.get(bestIndex).getStartingPiece(), candidateMoves.get(bestIndex).getEndingTile().getPiece(), this.board, enPassant, previousMove.getEndingTile(), castling);
           return toMake;
      }
 
      public double evaluatePosition(Board board) {
-          //Material, king safety, piece activity
           //Positive = better for white, negative = better for black
           //More extreme value = higher advantage
-          //System.out.println((b.getTotalPieceValue("w") -  b.getTotalPieceValue("b")));
 
           double materialEval = board.getTotalPieceValue("w") - board.getTotalPieceValue("b");
           //pawns on the same column(pawn structure eval)
           double pawnStructureEval = this.pawnStructureEval(board);
-          //hanging pieces
-
           //bishop pair
           double bishopPairEval = this.bishopPairEval(board);
           //centralized pieces
 
           //knights on the edge
 
-          //more empty squares near a king
+          //empty squares near a king
+
+          //avoid repeating moves
+
+          //ability to promote
+
+          //color complexes, having bishops that are not the same as the enemy pawn color
 
           double totalEval = (materialEval * .9) + (pawnStructureEval * .05) + (bishopPairEval * .05);
           return totalEval;
