@@ -127,7 +127,7 @@ public class Move {
           if (this.startingPiece.getColor().equals("w")) {
                if (this.endingTile.getColumn() == 2) {
                     //Queen side white castling
-                    whiteRook = new Piece("R", "w", this.startingPiece.getRow(), this.startingPiece.getColumn() + 1);
+                    whiteRook = new Piece("R", "w", this.startingPiece.getRow(), this.startingPiece.getColumn() - 1);
                     Piece empty = new Piece("e", "e", this.endingTile.getRow(), this.endingTile.getColumn() - 2);
                     this.board.setTile(this.endingTile.getRow(), this.endingTile.getColumn() - 2, empty);
                     this.board.setTile(this.startingPiece.getRow(), this.startingPiece.getColumn() - 1, whiteRook);
@@ -143,7 +143,7 @@ public class Move {
           } else {
                if (this.endingTile.getColumn() == 2) {
                     //Queen side black castling
-                    blackRook = new Piece("R", "b", this.startingPiece.getRow(), this.startingPiece.getColumn() + 1);
+                    blackRook = new Piece("R", "b", this.startingPiece.getRow(), this.startingPiece.getColumn() - 1);
                     Piece empty = new Piece("e", "e", this.endingTile.getRow(), this.endingTile.getColumn() - 2);
                     this.board.setTile(this.endingTile.getRow(), this.endingTile.getColumn() - 2, empty);
                     this.board.setTile(this.startingPiece.getRow(), this.startingPiece.getColumn() - 1, blackRook);

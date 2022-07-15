@@ -57,6 +57,7 @@ public class Engine {
                     testMove.undoMove();
                     castling = false;
                     enPassant = false;
+                    }
                }
           }
           if (candidateMoves.size() < 1) {
@@ -67,6 +68,7 @@ public class Engine {
           System.out.println("Selected Candidate Move " + (bestIndex + 1) + " ; Eval: " + bestEval);
           Move toMake = new Move(candidateMoves.get(bestIndex).getStartingPiece(), candidateMoves.get(bestIndex).getEndingTile().getPiece(), this.board, enPassant, previousMove.getEndingTile(), castling);
           return toMake;
+
      }
 
      public double evaluatePosition(Board board) {
