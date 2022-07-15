@@ -28,8 +28,9 @@ public class Engine {
                }
           }
           ArrayList<Tile> possibleMovesPerPiece = new ArrayList<Tile>();
-          double currentEval = 0;
-          double bestEval = 0;
+          //these next two lines should be monitored when branching out the use case of this method
+          double currentEval = this.evaluatePosition(this.testBoard);
+          double bestEval = currentEval;
           int bestIndex = 0;
           for (Piece piece : possibleStartingPieces) {
                possibleMovesPerPiece = piece.getPossibleMoves();
@@ -48,13 +49,10 @@ public class Engine {
                          candidateAmount++;
                          candidateMoves.add(testMove);
                          System.out.println("Candidate " + candidateAmount + ": " + testMove.toString() + "; EVAL: " + currentEval);
-                         //this next line doesn't always engage when it should
-                         //System.out.println("c " + currentEval + " b " + bestEval);
                          if (currentEval < bestEval) {
                               bestIndex = candidateAmount - 1;
                               bestEval = currentEval;
                               System.out.println("new better index: " + bestIndex);
-                         }
                     }
                     testMove.undoMove();
                     castling = false;
@@ -92,6 +90,10 @@ public class Engine {
 
           //color complexes, having bishops that are not the same as the enemy pawn color
 
+          //Weighting evals
+          //Material = 90%
+          //Pawn structure = 5%
+          //Having bishop pair = 5%
           double totalEval = (materialEval * .9) + (pawnStructureEval * .05) + (bishopPairEval * .05);
           return totalEval;
      }
@@ -123,6 +125,12 @@ public class Engine {
                }
           }
           return blackBadColumns - whiteBadColumns;
+     }
+
+     public int pushedPawnsEval(Board board) {
+          //passed pawns(pawns that have no opposition from enemy pawns)
+          //pawns closer to promotion
+          return 0;
      }
 
      public int bishopPairEval(Board board) {
