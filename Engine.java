@@ -52,7 +52,6 @@ public class Engine {
                          if (currentEval < bestEval) {
                               bestIndex = candidateAmount - 1;
                               bestEval = currentEval;
-                              System.out.println("new better index: " + bestIndex);
                     }
                     testMove.undoMove();
                     castling = false;
@@ -84,13 +83,11 @@ public class Engine {
 
           //knights on the edge
 
-          //empty squares near a king
+          //empty squares near a king(especially if the empty squares match that of an enemy bishop)
 
           //avoid repeating moves
 
           //ability to promote
-
-          //color complexes, having bishops that are not the same as the enemy pawn color
 
           //Weighting evals
           //Material = 90%
