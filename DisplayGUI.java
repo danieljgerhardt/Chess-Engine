@@ -57,9 +57,7 @@ public class DisplayGUI extends JFrame implements ActionListener {
                     } else {
                          tileButtons[i][j].setBackground(darkColor);
                     }
-
                     buttonPanel.add(tileButtons[i][j]);
-
                }
           }
      }
@@ -83,7 +81,7 @@ public class DisplayGUI extends JFrame implements ActionListener {
                          if (piecesClicked.size() > 1) {
                               if (this.game.executePlayerMove(piecesClicked.get(piecesClicked.size() - 2), piecesClicked.get(piecesClicked.size() - 1))) {
                                    this.addPieces();
-                                   this.game.executeComputerMove();
+                                   this.game.executeComputerMove("b");
                               }
                          }
                     }
@@ -105,6 +103,24 @@ public class DisplayGUI extends JFrame implements ActionListener {
 
      public static void main(String[] args) {
           DisplayGUI GUI = new DisplayGUI();
+          /*for (int i = 0; i < 40; i++) {
+               GUI.game.executeComputerMove("w");
+               GUI.addPieces();
+               try {
+                   Thread.sleep(1000);
+               }
+               catch(InterruptedException ex) {
+                   Thread.currentThread().interrupt();
+               }
+               GUI.game.executeComputerMove("b");
+               GUI.addPieces();
+               try {
+                   Thread.sleep(1000);
+               }
+               catch(InterruptedException ex) {
+                   Thread.currentThread().interrupt();
+               }
+          }*/
      }
 
      public void setTileColor(Color c, int row, int column) {

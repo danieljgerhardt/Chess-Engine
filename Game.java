@@ -77,8 +77,17 @@ public class Game {
           return false;
      }
 
-     public boolean executeComputerMove() {
-          Move move = engine.generateMove(this.moveList.get(this.moveList.size() - 1));
+     public boolean executeComputerMove(String color) {
+          Move move = null;
+          if (color.equals("b")) {
+               move = engine.generateMoveBlack(this.moveList.get(this.moveList.size() - 1));
+          } else if (color.equals("w")) {
+               if (moveList.size() < 1) {
+                    move = engine.generateFirstMoveWhite();
+               } else {
+                    move = engine.generateMoveWhite(this.moveList.get(this.moveList.size() - 1));
+               }
+          }
           if (move.makeMove()) {
                this.moveList.add(move);
                System.out.println(move.toString());

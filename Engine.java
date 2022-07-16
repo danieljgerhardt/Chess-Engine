@@ -10,7 +10,7 @@ public class Engine {
           this.board = b;
      }
 
-     public Move generateMove(Move previousMove) {
+     public Move generateMoveBlack(Move previousMove) {
           int candidateAmount = 0;
           boolean castling = false;
           boolean enPassant = false;
@@ -66,6 +66,116 @@ public class Engine {
           }
           System.out.println("Selected Candidate Move " + (bestIndex + 1) + " ; Eval: " + bestEval);
           Move toMake = new Move(candidateMoves.get(bestIndex).getStartingPiece(), candidateMoves.get(bestIndex).getEndingTile().getPiece(), this.board, enPassant, previousMove.getEndingTile(), castling);
+          return toMake;
+
+     }
+
+     public Move generateMoveWhite(Move previousMove) {
+          int candidateAmount = 0;
+          boolean castling = false;
+          boolean enPassant = false;
+          this.testBoard = this.board.getBoardCopy();
+          Piece empty = new Piece("e", "e", 0, 0);
+          Move generator = new Move(empty, empty, this.testBoard);
+          ArrayList<Piece> possibleStartingPieces = new ArrayList<Piece>();
+          ArrayList<Move> candidateMoves = new ArrayList<Move>();
+          for(Tile[] tArray : this.board.getTileArray()) {
+               for(Tile t : tArray) {
+                    if(t.getPiece().getColor().equals("w")) {
+                         possibleStartingPieces.add(t.getPiece());
+                         generator.generatePossibleMoves(t.getPiece());
+                    }
+               }
+          }
+          ArrayList<Tile> possibleMovesPerPiece = new ArrayList<Tile>();
+          //these next two lines should be monitored when branching out the use case of this method
+          double currentEval = this.evaluatePosition(this.testBoard);
+          double bestEval = currentEval;
+          int bestIndex = 0;
+          for (Piece piece : possibleStartingPieces) {
+               possibleMovesPerPiece = piece.getPossibleMoves();
+               for (int i = 0; i < possibleMovesPerPiece.size(); i++) {
+                    //System.out.println(possibleMovesPerPiece.size());
+                    this.testBoard = this.board.getBoardCopy();
+                    if (piece.getType().equals("K") && Math.abs((piece.getColumn() - possibleMovesPerPiece.get(i).getColumn())) == 2) {
+                         castling = true;
+                    }
+                    if (previousMove.getStartingPiece().getType().equals("P") && previousMove.getStartingPiece().getRow() == 5 && piece.getType().equals("P")) { //this line is questionable
+                         enPassant = true;
+                    }
+                    Move testMove = new Move(piece, possibleMovesPerPiece.get(i).getPiece(), this.testBoard, enPassant, previousMove.getEndingTile(), castling);
+                    if (testMove.makeMove()) {
+                         currentEval = this.evaluatePosition(this.testBoard);
+                         candidateAmount++;
+                         candidateMoves.add(testMove);
+                         System.out.println("Candidate " + candidateAmount + ": " + testMove.toString() + "; EVAL: " + currentEval);
+                         if (currentEval > bestEval) {
+                              bestIndex = candidateAmount - 1;
+                              bestEval = currentEval;
+                    }
+                    testMove.undoMove();
+                    castling = false;
+                    enPassant = false;
+                    }
+               }
+          }
+          if (candidateMoves.size() < 1) {
+               System.out.println("ENGINE HAS NO MOVES -- GAME OVER");
+               System.out.println(this.board.toString());
+               System.exit(0);
+          }
+          System.out.println("Selected Candidate Move " + (bestIndex + 1) + " ; Eval: " + bestEval);
+          Move toMake = new Move(candidateMoves.get(bestIndex).getStartingPiece(), candidateMoves.get(bestIndex).getEndingTile().getPiece(), this.board, enPassant, previousMove.getEndingTile(), castling);
+          return toMake;
+
+     }
+
+     public Move generateFirstMoveWhite() {
+          int candidateAmount = 0;
+          this.testBoard = this.board.getBoardCopy();
+          Piece empty = new Piece("e", "e", 0, 0);
+          Move generator = new Move(empty, empty, this.testBoard);
+          ArrayList<Piece> possibleStartingPieces = new ArrayList<Piece>();
+          ArrayList<Move> candidateMoves = new ArrayList<Move>();
+          for(Tile[] tArray : this.board.getTileArray()) {
+               for(Tile t : tArray) {
+                    if(t.getPiece().getColor().equals("w")) {
+                         possibleStartingPieces.add(t.getPiece());
+                         generator.generatePossibleMoves(t.getPiece());
+                    }
+               }
+          }
+          ArrayList<Tile> possibleMovesPerPiece = new ArrayList<Tile>();
+          //these next two lines should be monitored when branching out the use case of this method
+          double currentEval = this.evaluatePosition(this.testBoard);
+          double bestEval = currentEval;
+          int bestIndex = 0;
+          for (Piece piece : possibleStartingPieces) {
+               possibleMovesPerPiece = piece.getPossibleMoves();
+               for (int i = 0; i < possibleMovesPerPiece.size(); i++) {
+                    //System.out.println(possibleMovesPerPiece.size());
+                    this.testBoard = this.board.getBoardCopy();
+                    Move testMove = new Move(piece, possibleMovesPerPiece.get(i).getPiece(), this.testBoard);
+                    if (testMove.makeMove()) {
+                         currentEval = this.evaluatePosition(this.testBoard);
+                         candidateAmount++;
+                         candidateMoves.add(testMove);
+                         System.out.println("Candidate " + candidateAmount + ": " + testMove.toString() + "; EVAL: " + currentEval);
+                         if (currentEval > bestEval) {
+                              bestIndex = candidateAmount - 1;
+                              bestEval = currentEval;
+                    }
+                    testMove.undoMove();
+                    }
+               }
+          }
+          if (candidateMoves.size() < 1) {
+               System.out.println("ENGINE HAS NO MOVES -- GAME OVER");
+               System.out.println(this.board.toString());
+               System.exit(0);
+          }
+          System.out.println("Selected Candidate Move " + (bestIndex + 1) + " ; Eval: " + bestEval);
+          Move toMake = new Move(candidateMoves.get(bestIndex).getStartingPiece(), candidateMoves.get(bestIndex).getEndingTile().getPiece(), this.board);
           return toMake;
 
      }

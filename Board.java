@@ -170,7 +170,7 @@ public class Board {
           String ret = "";
           for(Tile[] tileRow : this.tileArray) {
                for (Tile tile : tileRow) {
-                    ret += tile.toString();
+                    ret += tile.getPiece().toString();
                }
                ret += "\n";
          }
